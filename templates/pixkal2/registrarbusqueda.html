@@ -1,0 +1,96 @@
+{% extends 'pixkal2/base.html' %}
+{% load static %}
+
+{% block head %}
+<script src="{% static 'pixkal2/js/jquery.min.js' %}"></script>
+<link href="{% static 'pixkal2/default.css' %}" rel="stylesheet">
+<link href="{% static 'pixkal2/default.date.css' %}" rel="stylesheet">
+<script src="{% static 'pixkal2/js/picker.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="text-center">
+{% if editar == 1 %}
+    <h1 class="h3 mb-3 font-weight-normal">Editar búsqueda</h1>
+{% else %}
+    <h1 class="h3 mb-3 font-weight-normal">Registra una búsqueda</h1>
+{% endif %}
+ <div class="form-group">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Guardar</button>
+    </form>
+</div>
+<br/><br/>
+{% if editar == 1 %}
+
+{% if busqueda.no_items < 3 %}
+<a href="/registrar/busquedalugar/{{ busqueda.id }}/" class="btn btn-dark" role="button" style="margin-top: 25px;">Agregar un nuevo lugar</a>
+{% endif %}
+
+{% if busqueda.no_items > 1 %}
+<a href="/treasure/activarBusqueda/{{ busqueda.id }}/" class="btn btn-success" role="button" style="margin-top: 25px;">Activar búsqueda</a>
+{% endif %}
+
+{% if busqueda.estado != 'A' %}
+<a href="/treasure/cancelarBusqueda/{{ busqueda.id }}/" class="btn btn-danger" role="button" style="margin-top: 25px;">Cancelar búsqueda</a>
+{% endif %}
+
+<hr style="width:100%;text-align:left;margin-left:0">
+
+<h1 class="h3 mb-3 font-weight-normal">Lugares actuales</h1>
+<br/><br/>
+
+{% for busquedalugar in busquedalugares %}
+
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="/static/pixkal2/images/{{ busquedalugar.avatar.model_Image }}" class="card-img" alt="Avatar">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title"><a href="/verAvatar/{{ busquedalugar.id }}/">{{ busquedalugar.avatar.titulo }}</a></h5>
+        <p class="card-text"><a href="/busquedalugar/{{ busquedalugar.id }}/editar/">Latitud: {{ busquedalugar.latitud }} Longitud: {{ busquedalugar.longitud }}</a></p>
+        <p class="card-text"><small class="text-muted"><a href="/soloAR/{{ busquedalugar.avatar.id }}/">Ver modelo</a></small></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+
+{% endif %}
+
+</div>
+
+<script src="{% static 'pixkal2/js/picker.date.js' %}"></script>
+    <script type="text/javascript">
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if(dd<10) {
+            dd='0'+dd;
+        }
+        if(mm<10) {
+            mm='0'+mm;
+        }
+        today = dd+'/'+mm+'/'+yyyy;
+
+        var $input = $( '.datepicker' ).pickadate({
+            weekdaysShort: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+            today: 'Hoy',
+            clear: 'Limpiar',
+            close: 'Cerrar',
+            formatSubmit: 'yyyy-mm-dd',
+            format: 'yyyy-mm-dd',
+            closeOnSelect: false,
+            closeOnClear: false,
+        })
+
+        var picker = $input.pickadate('picker')
+    </script>
+{% endblock %}

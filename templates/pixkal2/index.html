@@ -1,0 +1,179 @@
+{% load static %}
+{% if user.is_authenticated %}
+  Hola {{ user.username }}!
+  <p><a href="{% url 'pixkal2:registrarbusqueda' %}">Registrar búsqueda</a></p>
+  <br/><br/><br/>
+  <p><a href="{% url 'pixkal2:logout' %}">logout</a></p>
+{% else %}
+<!DOCTYPE HTML>
+<!--
+	Theory by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<title>Pixkal</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" type="text/css" href="{% static 'pixkal2/main.css' %}">
+	</head>
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<div class="inner">
+					<a href="{% url 'pixkal2:index' %}" class="logo"><img src="{% static 'pixkal2/images/Pixkal_Icon.png' %}"></img></a>
+					<nav id="nav">
+					    <a href="{% url 'pixkal2:galeriaar' %}">Galería</a>
+						<a href="{% url 'pixkal2:login' %}">Iniciar Sesión</a>
+						<a href="{% url 'pixkal2:signup' %}">Registrarse</a>
+					</nav>
+					<a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+				</div>
+			</header>
+
+		<!-- Banner -->
+			<section id="banner">
+				<h1>Bienvenido a Pixkal</h1>
+				<p>Experiencias en realidad aumentada</p>
+			</section>
+
+		<!-- One -->
+			<section id="one" class="wrapper">
+				<div class="inner">
+					<div class="flex flex-3">
+						<article>
+							<header>
+								<h3>Búsquedas del tesoro con AR</h3>
+							</header>
+							<p>Brinda ofertas y genera mayor atracción hacia tus clientes ofreciéndoles nuevas experiencias relacionadas con tu marca</p>
+							<footer>
+								<a href="#" class="button special">Más</a>
+							</footer>
+						</article>
+						<article>
+							<header>
+								<h3>Productos aumentados</h3>
+							</header>
+							<p>Conoce nuestros productos con realidad aumentada, sin necesidad de descargar aplicaciones y a un click de distancia</p>
+							<footer>
+								<a href="#" class="button special">Más</a>
+							</footer>
+						</article>
+						<article>
+							<header>
+								<h3>Exposiciones y demostraciones</h3>
+							</header>
+							<p>¿Eres un artista o te gustaría dar a conocer tu trabajo? Crea exposiciones y demostraciones para generar nuevas experiencias</p>
+							<footer>
+								<a href="#" class="button special">Más</a>
+							</footer>
+						</article>
+					</div>
+				</div>
+			</section>
+
+		<!-- Two -->
+			<section id="two" class="wrapper style1 special">
+				<div class="inner">
+					<header>
+						<h2>¿Quiénes nos recomiendan?</h2>
+						<p>Conoce de quienes han usado nuestra plataforma</p>
+					</header>
+					<div class="flex flex-4">
+						<div class="box person">
+							<div class="image round">
+								<img src="{% static 'pixkal2/images/pic03.jpg' %}" alt="Person 1" />
+							</div>
+							<h3>Carlos</h3>
+							<p>Emprendedor</p>
+						</div>
+						<div class="box person">
+							<div class="image round">
+								<img src="{% static 'pixkal2/images/pic04.jpg' %}" alt="Person 2" />
+							</div>
+							<h3>Maya</h3>
+							<p>Diseñadora</p>
+						</div>
+						<div class="box person">
+							<div class="image round">
+								<img src="{% static 'pixkal2/images/pic05.jpg' %}" alt="Person 3" />
+							</div>
+							<h3>Marcos</h3>
+							<p>Restaurantero</p>
+						</div>
+						<div class="box person">
+							<div class="image round">
+								<img src="{% static 'pixkal2/images/pic06.jpg' %}" alt="Person 4" />
+							</div>
+							<h3>Dolores</h3>
+							<p>Artísta</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+		<!-- Three -->
+			<section id="three" class="wrapper special">
+				<div class="inner">
+					<header class="align-center">
+						<h2>Experiencias</h2>
+						<p>Conoce algunas de las experiencias que hemos generado </p>
+					</header>
+					<div class="flex flex-2">
+						<article>
+							<div class="image fit">
+								<img src="{% static 'pixkal2/images/pic01.jpg' %}" alt="Pic 01" />
+							</div>
+							<header>
+								<h3>Café gratis por un mes</h3>
+							</header>
+							<p>En Junio lanzamos el siguiente reto, quien encontrara primero las 3 figuras que habíamos dispersado por la ciudad, tendría café gratis por un mes. Esta actividad generó una gran expectativa y fue completamente gratis.</p>
+							<footer>
+								<a href="#" class="button special">Más</a>
+							</footer>
+						</article>
+						<article>
+							<div class="image fit">
+								<img src="{% static 'pixkal2/images/pic02.jpg' %}" alt="Pic 02" />
+							</div>
+							<header>
+								<h3>Nuevos monstruos en el parque</h3>
+							</header>
+							<p>Queríamos encontrar la forma de dar a conocer una escuela de dibujo, esto fue lo que se nos ocurrió</p>
+							<footer>
+								<a href="#" class="button special">Más</a>
+							</footer>
+						</article>
+					</div>
+				</div>
+			</section>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+					<div class="flex">
+						<div class="copyright">
+							&copy; Untitled. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a href="https://unsplash.com">Unsplash</a>.
+						</div>
+						<ul class="icons">
+							<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+							<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
+							<li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+							<li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
+						</ul>
+					</div>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="{% static 'pixkal2/js/jquery.min.js' %}"></script>
+			<script src="{% static 'pixkal2/js/skel.min.js' %}"></script>
+			<script src="{% static 'pixkal2/js/util.js' %}"></script>
+			<script src="{% static 'pixkal2/js/main.js' %}"></script>
+
+	</body>
+</html>
+{% endif %}

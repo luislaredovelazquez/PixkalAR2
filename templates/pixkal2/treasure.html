@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Pixkal</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
+
+<script>
+
+    var latTarget = 0;
+    var lngTarget = 0;
+    var lat = 0;
+    var lng = 0;
+
+    function distance(lat1,lon1,lat2,lon2){
+    var R = 6371; // Earth's radius in Km
+    var km = Math.acos(Math.sin(lat1)*Math.sin(lat2) +
+                  Math.cos(lat1)*Math.cos(lat2) *
+                  Math.cos(lon2-lon1)) * R;
+    return km;
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+
+        navigator.geolocation.watchPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+
+      	lat = position.coords.latitude;
+        lng = position.coords.longitude;
+
+        latTarget = {{ busquedalugar.latitud }};
+        lngTarget = {{ busquedalugar.longitud }};
+
+
+        if(distance(lat, lng, latTarget, lngTarget) <= 5)
+        {
+                document.getElementById('a{{ busquedalugar.id }}').object3D.scale.set(2, 2, 2);
+        }
+
+    }
+
+
+AFRAME.registerComponent('raycaster-autorefresh', {
+  init: function () {
+    var el = this.el;
+    this.el.addEventListener('model-loaded', function () {
+      var cursorEl = el.querySelector('[raycaster]');
+      cursorEl.components.raycaster.refreshObjects();
+    });
+
+  }
+});
+
+AFRAME.registerComponent('cursor-listener', {
+    init: function() {
+        var data = this.data;
+        var el = this.el;
+        el.addEventListener('click', function() {
+        var url = "/treasure/status/{{ busqueda_id }}/"+el.id;
+            window.location.replace(url);
+        });
+    },
+
+});
+
+</script>
+
+
+  </head>
+
+  <body style="margin: 0; overflow: hidden;"  onload="getLocation()">
+
+    <a-scene
+      raycaster-autorefresh
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+    >
+
+
+
+      <a-entity gps-entity-place="latitude: {{ busquedalugar.latitud }}; longitude: {{ busquedalugar.longitud }};">
+      <a-entity id="{{ busquedalugar.id }}" geometry="primitive: box;" scale="5 5 5" position="0 2 0" material="opacity: 0.0; transparent: true" cursor-listener></a-entity >
+      <a-entity id="a{{ busquedalugar.id }}" gltf-model="/static/pixkal2/gltf/{{ busquedalugar.avatar.model_3DName }}"
+      scale="0 0 0"
+      look-at="[gps-camera]"
+      animation-mixer>
+      </a-entity>
+      </a-entity>
+
+
+
+<!--    <a-box cursor-listener color="red" position="-8 0 -10" rotation="0 45 45" scale="2 2 2"></a-box> -->
+
+      <a-camera gps-camera rotation-reader> <a-cursor></a-cursor> </a-camera>
+    </a-scene>
+
+  </body>
+</html>

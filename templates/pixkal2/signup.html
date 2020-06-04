@@ -1,0 +1,14 @@
+{% extends 'pixkal2/base_out.html' %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'pixkal2/centrar.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+ <form class="form-signin" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
+</form>
+{% endblock %}

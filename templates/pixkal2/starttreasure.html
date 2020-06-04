@@ -1,0 +1,18 @@
+{% extends 'pixkal2/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+{% if busqueda.estado != 'T' %}
+
+<h2>Recompensa: {{ busqueda.recompensa }}</h2>
+</br></br>
+<a href="/mapa/{{siguientelugar.id}}/" class="btn btn-success" role="button" style="margin-top: 25px;">Iniciar búsqueda</a>
+</br></br>
+{% endif %}
+
+{% else %}
+Acceso restringido
+{% endif %}
+
+{% endblock %}

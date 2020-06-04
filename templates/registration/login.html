@@ -1,0 +1,21 @@
+{% extends 'pixkal2/base_out.html' %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'pixkal2/centrar.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="text-center">
+ <form class="form-signin" method="post">
+    <div class="text-center mb-4">
+    <img class="mb-4" src="{% static 'pixkal2/images/Pixkal_Symbol.png' %}" alt="" width="72" height="72"></img>
+    <h1 class="h3 mb-3 font-weight-normal">Pixkal</h1>
+    <p>Inicia una nueva experiencia</p>
+  </div>
+  {% csrf_token %}
+  {{ form.as_p }}
+<button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar sesión</button> <a href="{% url 'pixkal2:password_reset' %}">Olvidé contraseña</a>
+</form>
+</div>
+{% endblock %}
