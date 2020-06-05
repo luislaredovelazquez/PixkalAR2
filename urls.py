@@ -1,5 +1,7 @@
 from django.urls import path, include, reverse_lazy # new
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 from . import views
@@ -35,4 +37,13 @@ urlpatterns = [
     path('seleccionarAvatar/<avatar_id>/<busqueda_lugar_id>/', views.SeleccionarAvatar, name='seleccionarAvatar'),
     path('treasure/informacion/<busqueda_id>/', views.VerInformacionBusqueda, name='treasureinfo'),
     path('galeriaar/', views.VerGaleriaAR, name='galeriaar'),
+    path('clase/registrar/', views.RegistrarClase, name='registrarclase'),
+    path('clase/actualizar/<clase_id>/', views.ActualizarClase, name='actualizarclase'),
+    path('clase/ver/<clase_id>/', views.VerClase, name='verclase'),
+    path('perfil/registrar/', views.RegistrarPerfil, name='registrarperfil'),
+    path('perfil/actualizar/', views.ActualizarPerfil, name='actualizarperfil'),
 ]
+
+if settings.DEBUG:
+        urlpatterns += static(settings.MEDIA_URL,
+                              document_root=settings.MEDIA_ROOT)

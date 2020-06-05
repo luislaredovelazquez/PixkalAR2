@@ -25,7 +25,7 @@
   <div class="collapse navbar-collapse" id="navbarsExample01">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">{{user.username}}<span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{% url 'pixkal2:actualizarperfil' %}">{{user.username}}<span class="sr-only">(current)</span></a>
       </li>
     <li class="nav-item">
         <a class="nav-link" href="{% url 'pixkal2:misbusquedas' %}">Búsquedas creadas por mí </a>
@@ -35,6 +35,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'pixkal2:registrarbusqueda' %}">Registrar búsqueda</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'pixkal2:registrarclase' %}">Crear clase </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'pixkal2:logout' %}">Salir</a>

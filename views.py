@@ -9,8 +9,8 @@ from django.core.mail import send_mail
 from datetime import timedelta
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar
-from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm
+from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil
+from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm
 
 def mostrarIndex(request):
     if request.user.is_authenticated:
@@ -361,6 +361,11 @@ def Signup(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+            perfil = Perfil()
+            perfil.usuario = user
+            avatar = get_object_or_404(Avatar, pk=1)
+            perfil.avatar = avatar
+            perfil.save()
             login(request, user)
             return HttpResponseRedirect(reverse('pixkal2:dashboard'))
     else:
@@ -414,3 +419,65 @@ def VerGaleriaAR(request):
     except EmptyPage:
         lista_mibusqueda = mipaginator.page(mipaginator.num_pages)
     return render(request,'pixkal2/galeria_ar.html',{'misbusquedas' : lista_mibusqueda,'avatares' : avatares })
+
+def RegistrarClase(request):
+    if request.method == "POST":
+        formulario = ClaseForm(request.POST)
+        if formulario.is_valid():
+            clase = formulario.save(commit=False)
+            clase.usuario = request.user
+            clase.save()
+#            clase_id=clase.pk
+            return HttpResponseRedirect(reverse('pixkal2:dashboard'))
+    else:
+        form = ClaseForm()
+        editar = 0
+        return render(request, 'pixkal2/gestionarclase.html', {'form': form, 'editar': editar })
+
+def ActualizarClase(request, clase_id):
+    clase = get_object_or_404(Clase, pk=clase_id)
+    if request.method == "POST":
+        form = ClaseForm(request.POST, instance=clase)
+        if form.is_valid():
+            post = form.save(commit=False)
+#            post.author = request.user
+#            post.published_date = timezone.now()
+            post.save()
+            return redirect('pixkal2:dashboard')
+    else:
+        form = ClaseForm(instance=clase)
+        editar = 1
+    return render(request, 'pixkal2/gestionarclase.html', {'form': form, 'editar': editar })
+
+def VerClase(request, clase_id):
+    clase = get_object_or_404(Clase, pk=clase_id)
+    return render(request, 'pixkal2/verclase.html',{ 'clase' : clase })
+
+def RegistrarPerfil(request):
+    if request.method == "POST":
+        formulario = PerfilForm(request.POST, request.FILES)
+        if formulario.is_valid():
+            perfil = formulario.save(commit=False)
+            perfil.usuario = request.user
+            perfil.save()
+#            clase_id=clase.pk
+            return HttpResponseRedirect(reverse('pixkal2:dashboard'))
+    else:
+        form = PerfilForm()
+        editar = 0
+        return render(request, 'pixkal2/gestionarperfil.html', {'form': form, 'editar': editar })
+
+def ActualizarPerfil(request):
+    perfil = get_object_or_404(Perfil, pk=request.user.id)
+    if request.method == "POST":
+        form = PerfilForm(request.POST,request.FILES, instance=perfil)
+        if form.is_valid():
+            post = form.save(commit=False)
+#            post.author = request.user
+#            post.published_date = timezone.now()
+            post.save()
+            return redirect('pixkal2:dashboard')
+    else:
+        form = PerfilForm(instance=perfil)
+        editar = 1
+    return render(request, 'pixkal2/gestionarperfil.html', {'form': form, 'editar': editar })

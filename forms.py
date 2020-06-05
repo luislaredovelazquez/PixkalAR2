@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Busqueda, BusquedaLugar
+from .models import Busqueda, BusquedaLugar, Clase, Perfil
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -68,3 +68,25 @@ class SignUpForm(UserCreationForm):
         self.fields['email'].widget.attrs.update({'class' : 'form-control'})
         self.fields['password1'].widget.attrs.update({'class' : 'form-control'})
         self.fields['password2'].widget.attrs.update({'class' : 'form-control'})
+
+class ClaseForm(forms.ModelForm):
+
+    class Meta:
+        model = Clase
+        fields = ('titulo', 'avatar',)
+
+    def __init__(self, *args, **kwargs):
+        super(ClaseForm, self).__init__(*args, **kwargs)
+        self.fields['titulo'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['avatar'].widget.attrs.update({'class' : 'form-control'})
+
+class PerfilForm(forms.ModelForm):
+
+    class Meta:
+        model = Perfil
+        fields = ('imagen_busqueda', 'avatar',)
+
+    def __init__(self, *args, **kwargs):
+        super(PerfilForm, self).__init__(*args, **kwargs)
+        self.fields['imagen_busqueda'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['avatar'].widget.attrs.update({'class' : 'form-control'})
