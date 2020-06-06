@@ -9,7 +9,7 @@ class BusquedaForm(forms.ModelForm):
     class Meta:
         model = Busqueda
 #        fields = "__all__"
-        fields = ('titulo_busqueda', 'descripcion', 'recompensa','duracion','inicio','fin','numero_personas')
+        fields = ('titulo_busqueda', 'descripcion', 'imagen', 'recompensa','duracion','inicio','fin','numero_personas')
 
     def __init__(self, *args, **kwargs):
         super(BusquedaForm, self).__init__(*args, **kwargs)
@@ -22,6 +22,7 @@ class BusquedaForm(forms.ModelForm):
         self.fields['fin'].widget.attrs.update({'data-value' : '2020-06-01'})
         self.fields['duracion'].widget.attrs.update({'class' : 'form-control'})
         self.fields['numero_personas'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['imagen'].widget.attrs.update({'class' : 'form-control'})
 
 class BusquedaLugarForm(forms.ModelForm):
 
@@ -73,12 +74,13 @@ class ClaseForm(forms.ModelForm):
 
     class Meta:
         model = Clase
-        fields = ('titulo', 'avatar',)
+        fields = ('titulo', 'avatar','imagen',)
 
     def __init__(self, *args, **kwargs):
         super(ClaseForm, self).__init__(*args, **kwargs)
         self.fields['titulo'].widget.attrs.update({'class' : 'form-control'})
         self.fields['avatar'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['imagen'].widget.attrs.update({'class' : 'form-control'})
 
 class PerfilForm(forms.ModelForm):
 

@@ -7,16 +7,23 @@
 
 {% block content %}
 
-<h2>Galería</h2>
 <h4>Selecciona la figura que quieres que aparezca en esta ubicación</h4>
 
 {% for avatar in avatares %}
-<div class="responsive">
-  <div class="gallery">
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
     <a href="/seleccionarAvatar/{{ avatar.id }}/{{busquedalugar.id}}">
-      <img src="/static/pixkal2/images/{{ avatar.model_Image }}" alt="Pixkal" width="600" height="400">
+      <img src="/static/pixkal2/images/{{ avatar.model_Image }}" class="card-img" alt="...">
     </a>
-    <div class="desc">{{ avatar.titulo }}</div>
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ avatar.titulo }}</h5>
+        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        <p class="card-text"><small class="text-muted"><a href="/soloAR/{{ avatar.id }}/">Ver modelo</a></small></p>
+      </div>
+    </div>
   </div>
 </div>
 {% endfor %}

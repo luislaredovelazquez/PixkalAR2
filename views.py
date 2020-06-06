@@ -191,11 +191,13 @@ def vote(request, question_id):
 
 def RegistrarBusqueda(request):
     if request.method == "POST":
-        formulario = BusquedaForm(request.POST)
+        formulario = BusquedaForm(request.POST, request.FILES)
         if formulario.is_valid():
             busqueda = formulario.save(commit=False)
             busqueda.estado = 'Inactivo'
             busqueda.creador = request.user
+            perfil = Perfil.objects.get(usuario=request.user)
+            busqueda.perfil = perfil
 #            post.published_date = timezone.now()
             busqueda.save()
             busqueda_id=busqueda.pk
@@ -208,7 +210,7 @@ def RegistrarBusqueda(request):
 def EditarBusqueda(request, pk):
     busqueda = get_object_or_404(Busqueda, pk=pk)
     if request.method == "POST":
-        form = BusquedaForm(request.POST, instance=busqueda)
+        form = BusquedaForm(request.POST, request.FILES, instance=busqueda)
         if form.is_valid():
             post = form.save(commit=False)
 #            post.author = request.user
@@ -312,7 +314,7 @@ def VerDashboard(request):
 def VerMisBusquedas(request):
     idusuario = request.user
     misbusquedas = Busqueda.objects.filter(creador=request.user).order_by('-id')
-
+    perfil = get_object_or_404(Perfil, usuario=request.user)
     # Paginador de mis búsquedas
 
     mipage = request.GET.get('page', 1)
@@ -325,7 +327,7 @@ def VerMisBusquedas(request):
     except EmptyPage:
         lista_mibusqueda = mipaginator.page(mipaginator.num_pages)
 
-    return render(request, 'pixkal2/misbusquedas.html',{'misbusquedas' : lista_mibusqueda,'idusuario' : idusuario})
+    return render(request, 'pixkal2/misbusquedas.html',{'misbusquedas' : lista_mibusqueda,'idusuario' : idusuario,'perfil' : perfil})
 
 
 def VerBusquedasParticipo(request):
@@ -422,10 +424,12 @@ def VerGaleriaAR(request):
 
 def RegistrarClase(request):
     if request.method == "POST":
-        formulario = ClaseForm(request.POST)
+        formulario = ClaseForm(request.POST, request.FILES)
         if formulario.is_valid():
             clase = formulario.save(commit=False)
             clase.usuario = request.user
+            perfil = get_object_or_404(Perfil, usuario=request.user)
+            clase.perfil = perfil
             clase.save()
 #            clase_id=clase.pk
             return HttpResponseRedirect(reverse('pixkal2:dashboard'))
@@ -437,7 +441,7 @@ def RegistrarClase(request):
 def ActualizarClase(request, clase_id):
     clase = get_object_or_404(Clase, pk=clase_id)
     if request.method == "POST":
-        form = ClaseForm(request.POST, instance=clase)
+        form = ClaseForm(request.POST, request.FILES, instance=clase)
         if form.is_valid():
             post = form.save(commit=False)
 #            post.author = request.user

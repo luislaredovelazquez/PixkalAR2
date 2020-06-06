@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
- <form class="form-signin" method="post">
+ <form class="form-signin" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}
 {% if editar == 1 %}
