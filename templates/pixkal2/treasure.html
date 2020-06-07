@@ -67,7 +67,14 @@ AFRAME.registerComponent('cursor-listener', {
         var data = this.data;
         var el = this.el;
         el.addEventListener('click', function() {
-        var url = "/treasure/status/{{ busqueda_id }}/"+el.id;
+
+        var url="";
+        {% if busquedalugar.bandera_pregunta == 0 %}
+        url = "/treasure/status/{{ busqueda_id }}/"+el.id;
+        {% else %}
+        url = "/pregunta/ver/{{ busquedalugar.id }}/";
+        {% endif %}
+
             window.location.replace(url);
         });
     },

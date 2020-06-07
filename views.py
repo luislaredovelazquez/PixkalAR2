@@ -5,8 +5,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth import login, authenticate
-from django.core.mail import send_mail
-from datetime import timedelta
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil
@@ -139,8 +137,8 @@ def StatusBusqueda(request,busqueda_id,busqueda_lugar_id):
 
 #En caso de que haya sido el último item se envía a la pantalla de búsqueda terminada
     if busquedaparticipante.items_encontrados == busqueda.no_items:
-        busqueda.estado = 'T'
-        busqueda.save()
+        busquedaparticipante.estado = "T"
+        busquedaparticipante.save()
         busqueda_completada = 1
         return render(request, 'pixkal2/status_treasure.html',{'siguientelugar': siguientelugar, 'busqueda' : busqueda, 'busqueda_completada' : busqueda_completada,'participantes' : participantes,'primero' : primero})
 
@@ -216,13 +214,13 @@ def EditarBusqueda(request, pk):
 #            post.author = request.user
 #            post.published_date = timezone.now()
             post.save()
-            return redirect('pixkal2:dashboard')
+            return redirect('pixkal2:misbusquedas')
     else:
         form = BusquedaForm(instance=busqueda)
         busquedalugares = BusquedaLugar.objects.filter(busqueda=busqueda)
         editar = 1
-    return render(request, 'pixkal2/registrarbusqueda.html', {'form': form,'busquedalugares': busquedalugares,'busqueda' : busqueda, 'editar': editar })
-
+        return render(request, 'pixkal2/registrarbusqueda.html', {'form': form,'busquedalugares': busquedalugares,'busqueda' : busqueda, 'editar': editar })
+    return redirect('pixkal2:misbusquedas')
 
 def RegistrarBusquedaLugar(request,busqueda_id):
     if request.method == "POST":
@@ -263,12 +261,12 @@ def AgregarParticipante(request, busqueda_id):
     if request.method == "GET":
 #Validar que los usuarios no se registren 2 veces
         try:
-            validar_item = BusquedaParticipante.objects.filter(busqueda=busqueda_id,usuario=request.user)
+            validado = BusquedaParticipante.objects.filter(busqueda=busqueda_id,usuario=request.user)
         except ItemEncontrado.DoesNotExist:
-            validar_item = None
+            validado = None
 
-        if validar_item:
-            return redirect('pixkal2:dashboard')
+        if validado:
+            return HttpResponseRedirect(reverse('pixkal2:dashboard'))
 
         busquedaparticipante = BusquedaParticipante()
         busquedaparticipante.usuario = request.user
@@ -277,25 +275,18 @@ def AgregarParticipante(request, busqueda_id):
         busquedaparticipante.items_encontrados = 0
         busquedaparticipante.estado = 'P'
         busquedaparticipante.save()
-
-        fechainicio = busqueda.inicio - timedelta(days=1)
-        mensaje = "Cuando tu búsqueda comience el "+fechainicio.strftime("%d/%m/%Y")+" da click en el siguiente enlace "+"https://luislaredov.pythonanywhere.com/treasure/iniciar/"+busqueda_id+"/"
-
-        send_mail(
-        'Tu búsqueda está por comenzar',
-        mensaje,
-        'from@example.com',
-        [request.user.email],
-        fail_silently=False,
-        )
-
-        return redirect('pixkal2:dashboard')
+        return HttpResponseRedirect(reverse('pixkal2:busquedasparticipo'))
     else:
-        return redirect('pixkal2:dashboard')
+        return HttpResponseRedirect(reverse('pixkal2:dashboard'))
 
 def VerDashboard(request):
     idusuario = request.user
-    busquedas = Busqueda.objects.filter(estado='I').exclude(creador=request.user).order_by('-id')
+    busquedas = Busqueda.objects.filter(estado='A').exclude(creador=request.user).order_by('-id')
+    busquedasparticipo = BusquedaParticipante.objects.filter(usuario=request.user).filter(estado='T')
+    for busquedaparticipo in busquedasparticipo:
+        for busqueda in busquedas:
+            if busqueda.id == busquedaparticipo.busqueda.id:
+                busquedas = busquedas.exclude(id = busqueda.id)
 
 # Paginador de búsqueda
 
@@ -333,7 +324,7 @@ def VerMisBusquedas(request):
 def VerBusquedasParticipo(request):
     idusuario = request.user
     busquedasparticipo = BusquedaParticipante.objects.filter(usuario=request.user).exclude(estado='G').exclude(estado='T')
-    busquedas = Busqueda.objects.filter(estado='I').exclude(creador=request.user).order_by('-id')
+    busquedas = Busqueda.objects.filter(estado='A').exclude(creador=request.user).order_by('-id')
     for busqueda in busquedas:
         for busquedaparticipo in busquedasparticipo:
             if busqueda.id == busquedaparticipo.busqueda.id:
@@ -485,3 +476,33 @@ def ActualizarPerfil(request):
         form = PerfilForm(instance=perfil)
         editar = 1
     return render(request, 'pixkal2/gestionarperfil.html', {'form': form, 'editar': editar })
+
+def ActualizarPregunta(request,blugar):
+    busquedalugar = get_object_or_404(BusquedaLugar, pk=blugar)
+    if request.method == "POST":
+        busquedalugar.bandera_pregunta = 1
+        busquedalugar.pregunta = request.POST['pregunta']
+        busquedalugar.respuesta = request.POST['respuesta']
+        busquedalugar.save()
+        return HttpResponseRedirect(reverse('pixkal2:editarbusqueda', args=(busquedalugar.busqueda.id,)))
+    else:
+        if busquedalugar.bandera_pregunta == 1:
+            return render(request, 'pixkal2/gestionarpregunta.html',{'busquedalugar': busquedalugar, 'actualizar': 1 })
+        else:
+            return render(request, 'pixkal2/gestionarpregunta.html',{'actualizar':0})
+
+def EliminarPregunta(request,blugar):
+    busquedalugar = get_object_or_404(BusquedaLugar, pk=blugar)
+    busquedalugar.bandera_pregunta = 0
+    busquedalugar.save()
+    return HttpResponseRedirect(reverse('pixkal2:editarbusqueda', args=(busquedalugar.busqueda.id,)))
+
+def VerPregunta(request,blugar):
+    busquedalugar = get_object_or_404(BusquedaLugar, pk=blugar)
+    if request.method == "POST":
+        if request.POST['respuesta'] == busquedalugar.respuesta:
+            return HttpResponseRedirect(reverse('pixkal2:statustreasure', args=(busquedalugar.busqueda.id,busquedalugar.id)))
+        else:
+            return render(request, 'pixkal2/verpregunta.html',{'busquedalugar': busquedalugar,'error': 1})
+    else:
+        return render(request, 'pixkal2/verpregunta.html',{'busquedalugar': busquedalugar,'error': 0})

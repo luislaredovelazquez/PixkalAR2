@@ -2,6 +2,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -16,6 +17,12 @@ def upload_location_busqueda(instance, filename):
 def upload_location_clase(instance, filename):
     filebase, extension = filename.split('.')
     return 'images/c%s.%s' % (instance.id, extension)
+
+def validate_image(image):
+    file_size = image.file.size
+    limit_kb = 1500
+    if file_size > limit_kb * 1024:
+        raise ValidationError("Tamaño máximo del archivo %s KB" % limit_kb)
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
@@ -47,7 +54,7 @@ class Avatar(models.Model):
 class Perfil(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE)
-    imagen_busqueda = models.ImageField(upload_to=upload_location)
+    imagen_busqueda = models.ImageField(upload_to=upload_location, validators=[validate_image])
 
 class Busqueda(models.Model):
     OPCIONES_ESTADO = (
@@ -80,7 +87,7 @@ class Busqueda(models.Model):
     creador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
     no_items = models.PositiveSmallIntegerField(default=0)
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, default=1)
-    imagen = models.ImageField(upload_to=upload_location_busqueda, default="")
+    imagen = models.ImageField(upload_to=upload_location_busqueda, default="", validators=[validate_image])
     def __str__(self):
         return self.titulo_busqueda
 
@@ -127,6 +134,6 @@ class Clase(models.Model):
     avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE)
     creacion = models.DateTimeField(auto_now=True)
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, default=1)
-    imagen = models.ImageField(upload_to=upload_location_clase, default="")
+    imagen = models.ImageField(upload_to=upload_location_clase, default="", validators=[validate_image])
     def __str__(self):
         return self.titulo

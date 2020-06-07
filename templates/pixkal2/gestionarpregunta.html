@@ -1,0 +1,29 @@
+{% extends 'pixkal2/base.html' %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'pixkal2/centrar.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+ <form class="form-signin" method="post">
+  {% csrf_token %}
+  <p><label for="pregunta">Reto:</label>
+  <textarea name="pregunta" cols="40" rows="10" maxlength="350" class="form-control" required id="id_pregunta">{% if actualizar == 1 %}{{ busquedalugar.pregunta }}{% endif %}
+  </textarea></p>
+  <p><label for="respuesta">Código:</label>
+  <input type="text" name="respuesta" {% if actualizar == 1 %} value="{{ busquedalugar.respuesta }}" {% else %} value="" {% endif %}
+   maxlength="350" class="form-control" required id="id_respuesta">
+  </p>
+{% if actualizar == 1 %}
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Actualizar pregunta</button>
+{% else %}
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Agregar pregunta</button>
+{% endif %}
+</form>
+
+<div>
+    <a href="/pregunta/eliminar/{{ busquedalugar.id }}/">Eliminar</a>
+</div>
+
+{% endblock %}

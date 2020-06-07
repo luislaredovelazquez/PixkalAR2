@@ -42,6 +42,9 @@ urlpatterns = [
     path('clase/ver/<clase_id>/', views.VerClase, name='verclase'),
     path('perfil/registrar/', views.RegistrarPerfil, name='registrarperfil'),
     path('perfil/actualizar/', views.ActualizarPerfil, name='actualizarperfil'),
+    path('pregunta/actualizar/<blugar>/', views.ActualizarPregunta, name='actualizarpregunta'),
+    path('pregunta/eliminar/<blugar>/', views.EliminarPregunta, name='eliminarpregunta'),
+    path('pregunta/ver/<blugar>/', views.VerPregunta, name='verpregunta'),
 ]
 
 if settings.DEBUG:

@@ -1,29 +1,15 @@
 {% extends 'pixkal2/base.html' %}
 
 {% block content %}
+<div style="width:100%; height: 50px;"></div>
 {% if user.is_authenticated %}
-
 {% if busqueda_completada == 0 %}
-
-<h2>Recompensa: {{ busqueda.recompensa }}</h2>
-</br></br>
-{% for participante in participantes %}
-
-{{ participante.usuario.username }} <br/>
-
-{% endfor %}
-</br></br>
+Nuevo destino desbloqueado
 <a href="/mapa/{{siguientelugar.id}}/" class="btn btn-success" role="button" style="margin-top: 25px;">Siguiente objetivo</a>
 {% else %}
-
-Búsqueda terminada
-Ganador: {{ primero.usuario.username }}
+<strong>¡Búsqueda terminada!</strong>
 {% endif %}
-
-
 {% else %}
 Acceso restringido
 {% endif %}
-
-
 {% endblock %}
