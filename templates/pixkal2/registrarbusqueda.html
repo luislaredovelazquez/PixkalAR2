@@ -16,7 +16,7 @@
     <h1 class="h3 mb-3 font-weight-normal">Registra una búsqueda</h1>
 {% endif %}
  <div class="form-group">
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-lg btn-primary btn-block" type="submit">Guardar</button>
@@ -35,6 +35,8 @@
 
 {% if busqueda.estado == 'A' %}
 <a href="/treasure/cancelarBusqueda/{{ busqueda.id }}/" class="btn btn-danger" role="button" style="margin-top: 25px;">Cancelar búsqueda</a>
+{% else %}
+<a href="/busqueda/imagen/actualizar/{{ busqueda.id }}/" class="btn btn-primary" role="button" style="margin-top: 25px;">Cambiar portada</a>
 {% endif %}
 
 <hr style="width:100%;text-align:left;margin-left:0">

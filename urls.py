@@ -26,6 +26,7 @@ urlpatterns = [
     path('accounts/signup/', views.Signup, name='signup'),
     path('registrar/busqueda/', views.RegistrarBusqueda, name='registrarbusqueda'),
     path('busqueda/<int:pk>/editar/', views.EditarBusqueda, name='editarbusqueda'),
+    path('busqueda/imagen/actualizar/<int:pk>/', views.ActualizarImagenBusqueda, name='actualizarimagenbusqueda'),
     path('registrar/busquedalugar/<busqueda_id>/', views.RegistrarBusquedaLugar, name='registrarbusquedalugar'),
     path('busquedalugar/<int:pk>/editar/', views.EditarBusquedaLugar, name='editarbusquedalugar'),
     path('agregar/participante/<busqueda_id>/', views.AgregarParticipante, name='agregarparticipante'),

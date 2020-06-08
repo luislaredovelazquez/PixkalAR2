@@ -5,13 +5,31 @@
 {% block head %}
 <link href="{% static 'pixkal2/cards.css' %}" rel="stylesheet">
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<style type="text/css">
+
+.backgroundimage
+{
+   height: auto;
+   left: 0;
+   margin: 0;
+   min-height: 100%;
+   min-width: 100px;
+   padding: 0;
+   position: fixed;
+   top: 0;
+   width: 100%;
+   z-index: -1;
+   background-image: url({% static 'pixkal2/images/not_found.png'%})
+}
+
+</style>
+
 {% endblock %}
 
 {% block content %}
 
 {% if user.is_authenticated %}
-
-  <h2>Participa en una búsqueda</h2>
 
  <div class="card-columns">
   {% for busqueda in busquedas %}
@@ -21,7 +39,11 @@
   <div class="wrapper">
     		<div class="card radius shadowDepth1">
     			<div class="card__image border-tlr-radius">
+    				{% if busqueda.imagen == "" %}
+    				<img src="{% static 'pixkal2/images/banner.jpg' %}" alt="image" class="border-tlr-radius">
+    				{% else %}
     				<img src="/media/{{ busqueda.imagen }}" alt="image" class="border-tlr-radius">
+    				{%endif%}
                 </div>
 
     			<div class="card__content card__padding">
@@ -51,7 +73,11 @@
 
     				<div class="card__author">
     			        <div style="width: 32px; height: 32px;">
+    				    {% if busqueda.perfil.imagen_busqueda == "" %}
+    					<img src="{% static 'pixkal2/images/profile.png' %}" alt="user" style="width: 100%; height: 100%;"/>
+    					{% else %}
     					<img src="/media/{{ busqueda.perfil.imagen_busqueda }}" alt="user" style="width: 100%; height: 100%;"/>
+    					{% endif %}
     					</div>
     					<div class="card__author-content">
     						Por <a href="#">{{ busqueda.creador.username }}</a>
@@ -64,8 +90,11 @@
 
 </div>
 
+{% empty %}
 
-  {% endfor %}
+<div class="backgroundimage"></div>
+
+{% endfor %}
  </div>
 
   {% if busquedas.has_other_pages %}

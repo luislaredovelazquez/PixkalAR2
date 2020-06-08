@@ -8,7 +8,7 @@ from django.contrib.auth import login, authenticate
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil
-from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm
+from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm
 
 def mostrarIndex(request):
     if request.user.is_authenticated:
@@ -189,7 +189,7 @@ def vote(request, question_id):
 
 def RegistrarBusqueda(request):
     if request.method == "POST":
-        formulario = BusquedaForm(request.POST, request.FILES)
+        formulario = BusquedaForm(request.POST)
         if formulario.is_valid():
             busqueda = formulario.save(commit=False)
             busqueda.estado = 'Inactivo'
@@ -208,7 +208,7 @@ def RegistrarBusqueda(request):
 def EditarBusqueda(request, pk):
     busqueda = get_object_or_404(Busqueda, pk=pk)
     if request.method == "POST":
-        form = BusquedaForm(request.POST, request.FILES, instance=busqueda)
+        form = BusquedaForm(request.POST, instance=busqueda)
         if form.is_valid():
             post = form.save(commit=False)
 #            post.author = request.user
@@ -221,6 +221,16 @@ def EditarBusqueda(request, pk):
         editar = 1
         return render(request, 'pixkal2/registrarbusqueda.html', {'form': form,'busquedalugares': busquedalugares,'busqueda' : busqueda, 'editar': editar })
     return redirect('pixkal2:misbusquedas')
+
+def ActualizarImagenBusqueda(request,pk):
+    busqueda = get_object_or_404(Busqueda, pk=pk)
+    if request.method == "POST":
+        form = BusquedaImagenForm(request.POST, request.FILES, instance=busqueda)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.save()
+        return redirect('pixkal2:misbusquedas')
+    return render(request, 'pixkal2/actualizarimagenbusqueda.html')
 
 def RegistrarBusquedaLugar(request,busqueda_id):
     if request.method == "POST":
