@@ -46,6 +46,9 @@ urlpatterns = [
     path('pregunta/actualizar/<blugar>/', views.ActualizarPregunta, name='actualizarpregunta'),
     path('pregunta/eliminar/<blugar>/', views.EliminarPregunta, name='eliminarpregunta'),
     path('pregunta/ver/<blugar>/', views.VerPregunta, name='verpregunta'),
+    path('sonido/lugar/<blugar>/', views.AgregarSonido, name='agregarsonido'),
+    path('sonido/subir/<blugar>/', views.SubirSonido, name='subirsonido'),
+    path('modelobAR/<blugar>/', views.ModeloBAR, name='modelobar'),
 ]
 
 if settings.DEBUG:

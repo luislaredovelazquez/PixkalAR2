@@ -1,5 +1,4 @@
 from django.utils import timezone
-
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -8,7 +7,9 @@ from django.contrib.auth import login, authenticate
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil
-from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm
+from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm, SonidoForm
+import logging
+from django.conf import settings
 
 def mostrarIndex(request):
     if request.user.is_authenticated:
@@ -516,3 +517,35 @@ def VerPregunta(request,blugar):
             return render(request, 'pixkal2/verpregunta.html',{'busquedalugar': busquedalugar,'error': 1})
     else:
         return render(request, 'pixkal2/verpregunta.html',{'busquedalugar': busquedalugar,'error': 0})
+
+def AgregarSonido(request,blugar):
+    lugar = get_object_or_404(BusquedaLugar, pk=blugar)
+    return render(request,'pixkal2/agregar_sonido.html', {'lugar': lugar})
+#    if request.method == 'POST':
+#        form = SonidoForm(request.POST, request.FILES, instance=lugar)
+#        if form.is_valid():
+#        uploadedFile = open("/media/sonidos/recording.mp3", "wb")
+#        uploadedFile.write(request.body)
+#        uploadedFile.close()
+#           form.save()
+#           return HttpResponseRedirect(reverse('pixkal2:dashboard'))
+#    else:
+#        form = SonidoForm(instance = lugar)
+#    return render(request,'pixkal2/agregar_sonido.html', {'lugar': lugar})
+#        return render(request,'pixkal2/agregar_sonido.html')
+
+def SubirSonido(request,blugar):
+    lugar = get_object_or_404(BusquedaLugar, pk=blugar)
+    path = settings.BASE_DIR+"/media/sonidos/"+"s"+str(lugar.id)+".mp3"
+    uploadedFile = open(path, "wb")
+    uploadedFile.write(request.body)
+    uploadedFile.close()
+
+    lugar.sonido = "s"+str(lugar.id)+".mp3"
+    lugar.save()
+    # put additional logic like creating a model instance or something like this here
+    return HttpResponseRedirect(reverse('pixkal2:dashboard'))
+
+def ModeloBAR(request,blugar):
+    lugar = get_object_or_404(BusquedaLugar, pk=blugar)
+    return render(request, 'pixkal2/modelobar.html',{'lugar' : lugar})

@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Wave Recorder Example</title>
+  <script src="{% static 'pixkal2/js/recorder.min.js' %}"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <style type='text/css'>
+    ul { list-style: none; }
+    li { margin: 1em; }
+    audio { display: block; }
+  </style>
+</head>
+<body>
+
+  <h1>Wave Recorder example</h1>
+  <p>Before you enable monitoring, make sure to either plug in headphones or turn the volume down.</p>
+
+  <h2>Options</h2>
+
+  <div>
+    <label>monitorGain</label>
+    <input id="monitorGain" type="number" value="0" />
+  </div>
+
+  <div>
+    <label>recordingGain</label>
+    <input id="recordingGain" type="number" value="1" />
+  </div>
+
+  <div>
+    <label>numberOfChannels</label>
+    <input id="numberOfChannels" type="number" value="1" />
+  </div>
+
+  <div>
+    <label>bitDepth</label>
+    <input id="bitDepth" type="number" value="16" />
+  </div>
+
+  <div>
+    <button id="init">init recorder with options</button>
+  </div>
+
+  <h2>Recorder Commands</h2>
+  <button id="start" disabled>start</button>
+  <button id="pause" disabled>pause</button>
+  <button id="resume" disabled>resume</button>
+  <button id="stopButton" disabled>stop</button>
+
+  <h2>Recordings</h2>
+  <ul id="recordingslist"></ul>
+
+  <h2>Log</h2>
+  <pre id="log"></pre>
+
+  <script>
+
+// Required for Django CSRF
+function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+// Actual Upload function using xhr
+function upload(blob, progressBar){
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/sonido/subir/{{ lugar.id }}/', true); //Obviamente esto va a cambiar
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        xhr.setRequestHeader("MyCustomHeader", "Put anything you need in here, like an ID");
+
+        xhr.upload.onloadend = function() {
+            alert('Upload complete');
+        };
+        // If you want you can show the upload progress using a progress bar
+        //var progressBar = document.querySelector('progress');
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                progressBar.value = (e.loaded / e.total) * 100;
+                progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
+            }
+        };
+
+        xhr.send(blob);
+    }
+    function screenLogger(text, data) {
+      log.innerHTML += "\n" + text + " " + (data || '');
+    }
+
+    if (!Recorder.isRecordingSupported()) {
+      screenLogger("Recording features are not supported in your browser.");
+    }
+
+    else {
+      init.addEventListener( "click", function(){
+        init.disabled = true;
+        start.disabled = false;
+        monitorGain.disabled = true;
+        recordingGain.disabled = true;
+        numberOfChannels.disabled = true;
+        bitDepth.disabled = true;
+
+        var recorder = new Recorder({
+          monitorGain: parseInt(monitorGain.value, 10),
+          recordingGain: parseInt(recordingGain.value, 10),
+          numberOfChannels: parseInt(numberOfChannels.value, 10),
+          wavBitDepth: parseInt(bitDepth.value,10),
+          encoderPath: "{% static 'pixkal2/js/waveWorker.min.js' %}"
+        });
+
+        pause.addEventListener( "click", function(){ recorder.pause(); });
+        resume.addEventListener( "click", function(){ recorder.resume(); });
+        stopButton.addEventListener( "click", function(){ recorder.stop(); });
+        start.addEventListener( "click", function(){
+          recorder.start().catch(function(e){
+            screenLogger('Error encountered:', e.message );
+          });
+        });
+
+        recorder.onstart = function(){
+          screenLogger('Recorder is started');
+          start.disabled = resume.disabled = true;
+          pause.disabled = stopButton.disabled = false;
+        };
+
+        recorder.onstop = function(){
+          screenLogger('Recorder is stopped');
+          start.disabled = false;
+          pause.disabled = resume.disabled = stopButton.disabled = true;
+        };
+
+        recorder.onpause = function(){
+          screenLogger('Recorder is paused');
+          pause.disabled = start.disabled = true;
+          resume.disabled = stopButton.disabled = false;
+        };
+
+        recorder.onresume = function(){
+          screenLogger('Recorder is resuming');
+          start.disabled = resume.disabled = true;
+          pause.disabled = stopButton.disabled = false;
+        };
+
+        recorder.onstreamerror = function(e){
+          screenLogger('Error encountered: ' + e.message );
+        };
+
+        recorder.ondataavailable = function( typedArray ){
+          var dataBlob = new Blob( [typedArray], { type: 'audio/mp3' } );
+          var fileName = new Date().toISOString() + ".mp3";
+          var url = URL.createObjectURL( dataBlob );
+
+          var audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = url;
+
+          var link = document.createElement('a');
+          link.href = url;
+          link.download = fileName;
+          link.innerHTML = link.download;
+
+          // New Code starts here
+            var progress = document.createElement('progress');
+            progress.min = 0;
+            progress.max = 100;
+            progress.value = 0;
+            var progressText = document.createTextNode("Progress: ");
+
+            var button = document.createElement('button');
+            var t = document.createTextNode("Upload?");
+            button.id = 'button';
+            button.appendChild(t);
+            button.onclick = function() {
+                upload(dataBlob, progress);
+            };
+
+          var li = document.createElement('li');
+          li.appendChild(link);
+          li.appendChild(audio);
+          li.appendChild(button);
+          li.appendChild(progressText);
+          li.appendChild(progress);
+
+          recordingslist.appendChild(li);
+        };
+      });
+    }
+
+
+
+  </script>
+</body>
+</html>

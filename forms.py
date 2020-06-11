@@ -3,25 +3,27 @@ from django import forms
 from .models import Busqueda, BusquedaLugar, Clase, Perfil
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+import os
 
 class BusquedaForm(forms.ModelForm):
 
     class Meta:
         model = Busqueda
 #        fields = "__all__"
-        fields = ('titulo_busqueda', 'descripcion', 'recompensa','duracion','inicio','fin','numero_personas')
+        fields = ('titulo_busqueda', 'descripcion', 'recompensa')
 
     def __init__(self, *args, **kwargs):
         super(BusquedaForm, self).__init__(*args, **kwargs)
         self.fields['titulo_busqueda'].widget.attrs.update({'class' : 'form-control'})
         self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
         self.fields['recompensa'].widget.attrs.update({'class' : 'form-control'})
-        self.fields['inicio'].widget.attrs.update({'class' : 'form-control datepicker'})
-        self.fields['inicio'].widget.attrs.update({'data-value' : '2020-06-01'})
-        self.fields['fin'].widget.attrs.update({'class' : 'form-control datepicker'})
-        self.fields['fin'].widget.attrs.update({'data-value' : '2020-06-01'})
-        self.fields['duracion'].widget.attrs.update({'class' : 'form-control'})
-        self.fields['numero_personas'].widget.attrs.update({'class' : 'form-control','value' : '3'})
+#        self.fields['inicio'].widget.attrs.update({'class' : 'form-control datepicker'})
+#        self.fields['inicio'].widget.attrs.update({'data-value' : '2020-06-01'})
+#        self.fields['fin'].widget.attrs.update({'class' : 'form-control datepicker'})
+#        self.fields['fin'].widget.attrs.update({'data-value' : '2020-06-01'})
+#        self.fields['duracion'].widget.attrs.update({'class' : 'form-control'})
+#        self.fields['numero_personas'].widget.attrs.update({'class' : 'form-control','value' : '3'})
 
 class BusquedaImagenForm(forms.ModelForm):
 
@@ -101,3 +103,22 @@ class PerfilForm(forms.ModelForm):
         super(PerfilForm, self).__init__(*args, **kwargs)
         self.fields['imagen_busqueda'].widget.attrs.update({'class' : 'form-control'})
         self.fields['avatar'].widget.attrs.update({'class' : 'form-control'})
+
+class SonidoForm(forms.ModelForm):
+
+    class Meta:
+        model = BusquedaLugar
+        fields = ('sonido',)
+# Agregar validación
+    def clean_audio_file(self):
+        file = self.cleaned_data.get('sonido')
+        if file:
+            if file._size > 4*1024*1024:
+                raise ValidationError("El tamaño del archivo es muy grande ( > 1.5Mb )")
+            if not file.content-type in ["audio/mpeg","audio/..."]:
+                raise ValidationError("Content-Type is not mpeg")
+            if not os.path.splitext(file.name)[1] in [".mp3",".wav",".ogg"]:
+                raise ValidationError("No tiene la extensión")
+            return file
+        else:
+            raise ValidationError("No fue posible subir el archivo")

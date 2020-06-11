@@ -18,6 +18,10 @@ def upload_location_clase(instance, filename):
     filebase, extension = filename.split('.')
     return 'images/c%s.%s' % (instance.id, extension)
 
+def upload_location_treasure_s(instance, filename):
+    filebase, extension = filename.split('.')
+    return 'sonidos/s%s.%s' % (instance.id, extension)
+
 def validate_image(image):
     file_size = image.file.size
     limit_kb = 1500
@@ -64,15 +68,15 @@ class Busqueda(models.Model):
         ('T', 'Terminado'),
     )
 
-    OPCIONES_DURACION = (
-        ('0', 'Sin limite de tiempo'),
-        ('10', '10 min.'),
-        ('20', '20 min.'),
-        ('30', '30 min.'),
-        ('60', '60 min.'),
-        ('120', '120 min.'),
-        ('180', '180 min.'),
-    )
+#    OPCIONES_DURACION = (
+#        ('0', 'Sin limite de tiempo'),
+#        ('10', '10 min.'),
+#        ('20', '20 min.'),
+#        ('30', '30 min.'),
+#        ('60', '60 min.'),
+#        ('120', '120 min.'),
+#        ('180', '180 min.'),
+#    )
 
     titulo_busqueda = models.CharField(max_length=350)
     recompensa = models.CharField(max_length=200)
@@ -81,9 +85,9 @@ class Busqueda(models.Model):
     descripcion = models.TextField(max_length=350, default="")
     numero_personas = models.PositiveSmallIntegerField()
     estado = models.CharField(max_length=1, choices=OPCIONES_ESTADO)
-    duracion = models.CharField(max_length=3, choices=OPCIONES_DURACION, default=0)
-    inicio = models.DateField()
-    fin = models.DateField()
+#    duracion = models.CharField(max_length=3, choices=OPCIONES_DURACION, default=0)
+#    inicio = models.DateField()
+#    fin = models.DateField()
     creador = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
     no_items = models.PositiveSmallIntegerField(default=0)
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, default=1)
@@ -99,6 +103,8 @@ class BusquedaLugar(models.Model):
     pregunta = models.TextField(max_length=350, default="")
     respuesta = models.CharField(max_length=20, default="")
     bandera_pregunta = models.SmallIntegerField(default=0)
+    sonido = models.FileField(upload_to=upload_location_treasure_s, default="", validators=[validate_image])
+    bandera_sonido = models.SmallIntegerField(default=0)
     creacion = models.DateTimeField(auto_now=True)
     ultima_modificacion = models.DateTimeField(auto_now_add=True)
     def __str__(self):
