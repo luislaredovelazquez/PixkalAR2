@@ -18,9 +18,9 @@
       <a-entity
           position="0 2 -5"
           scale="0.2 0.2 0.2"
-          gltf-model="/static/pixkal2/gltf/{{ lugar.avatar.model_3DName }}"
+          gltf-model="/static/pixkal2/gltf/{{ recurso.avatar.model_3DName }}"
           animation-mixer
-          sound="src: url(/media/sonidos/{{ lugar.sonido }}); autoplay: true"
+          {% if recurso.bandera_sonido == 1 %}     sound="src: url(/media/{{ recurso.sonido }}); autoplay: true" {% endif %}
           look-at="[camera]">
         </a-entity>
     </a-scene>

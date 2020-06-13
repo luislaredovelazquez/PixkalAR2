@@ -102,6 +102,7 @@ AFRAME.registerComponent('cursor-listener', {
       <a-entity id="a{{ busquedalugar.id }}" gltf-model="/static/pixkal2/gltf/{{ busquedalugar.avatar.model_3DName }}"
       scale="0 0 0"
       look-at="[gps-camera]"
+      {% if busquedalugar.bandera_sonido == 1 %}     sound="src: url(/media/{{ busquedalugar.sonido }}); autoplay: true" {% endif %}
       animation-mixer>
       </a-entity>
       </a-entity>

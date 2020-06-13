@@ -6,9 +6,8 @@ from django.views import generic
 from django.contrib.auth import login, authenticate
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil
-from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm, SonidoForm
-import logging
+from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil, ClaseItem
+from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm, ItemClaseForm, ClaseImagenForm
 from django.conf import settings
 
 def mostrarIndex(request):
@@ -518,34 +517,151 @@ def VerPregunta(request,blugar):
     else:
         return render(request, 'pixkal2/verpregunta.html',{'busquedalugar': busquedalugar,'error': 0})
 
-def AgregarSonido(request,blugar):
-    lugar = get_object_or_404(BusquedaLugar, pk=blugar)
-    return render(request,'pixkal2/agregar_sonido.html', {'lugar': lugar})
-#    if request.method == 'POST':
-#        form = SonidoForm(request.POST, request.FILES, instance=lugar)
-#        if form.is_valid():
-#        uploadedFile = open("/media/sonidos/recording.mp3", "wb")
-#        uploadedFile.write(request.body)
-#        uploadedFile.close()
-#           form.save()
-#           return HttpResponseRedirect(reverse('pixkal2:dashboard'))
-#    else:
-#        form = SonidoForm(instance = lugar)
-#    return render(request,'pixkal2/agregar_sonido.html', {'lugar': lugar})
-#        return render(request,'pixkal2/agregar_sonido.html')
+def AgregarSonido(request,blugar,tipo):
+    recurso = ""
+    if tipo=="busqueda":
+        recurso = get_object_or_404(BusquedaLugar, pk=blugar)
+    elif tipo=="clase":
+        recurso = get_object_or_404(ClaseItem, pk=blugar)
+    return render(request,'pixkal2/agregar_sonido.html', {'recurso': recurso, 'tipo' : tipo,})
 
-def SubirSonido(request,blugar):
-    lugar = get_object_or_404(BusquedaLugar, pk=blugar)
-    path = settings.BASE_DIR+"/media/sonidos/"+"s"+str(lugar.id)+".mp3"
-    uploadedFile = open(path, "wb")
-    uploadedFile.write(request.body)
-    uploadedFile.close()
 
-    lugar.sonido = "s"+str(lugar.id)+".mp3"
-    lugar.save()
+def SubirSonido(request,blugar,tipo):
+    if tipo=="busqueda":
+        lugar = get_object_or_404(BusquedaLugar, pk=blugar)
+        path = settings.BASE_DIR+"/media/sonidos/"+"s"+str(lugar.id)+".mp3"
+        uploadedFile = open(path, "wb")
+        uploadedFile.write(request.body)
+        uploadedFile.close()
+        lugar.sonido = "sonidos/s"+str(lugar.id)+".mp3"
+        lugar.bandera_sonido = 1
+        lugar.save()
+    elif tipo=="clase":
+        item = get_object_or_404(ClaseItem, pk=blugar)
+        path = settings.BASE_DIR+"/media/sonidos/"+"c"+str(item.id)+".mp3"
+        uploadedFile = open(path, "wb")
+        uploadedFile.write(request.body)
+        uploadedFile.close()
+        item.sonido = "sonidos/c"+str(item.id)+".mp3"
+        item.bandera_sonido = 1
+        item.save()
     # put additional logic like creating a model instance or something like this here
     return HttpResponseRedirect(reverse('pixkal2:dashboard'))
 
-def ModeloBAR(request,blugar):
-    lugar = get_object_or_404(BusquedaLugar, pk=blugar)
-    return render(request, 'pixkal2/modelobar.html',{'lugar' : lugar})
+def EliminarSonido(request,blugar,tipo):
+    if tipo=="busqueda":
+        busquedalugar = get_object_or_404(BusquedaLugar, pk=blugar)
+        busquedalugar.bandera_sonido = 0
+        busquedalugar.sonido = ""
+        busquedalugar.save()
+        return HttpResponseRedirect(reverse('pixkal2:editarbusqueda', args=(busquedalugar.busqueda.id,)))
+    elif tipo=="clase":
+        item = get_object_or_404(ClaseItem, pk=blugar)
+        item.bandera_sonido = 0
+        item.sonido = ""
+        item.save()
+        return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(item.clase.id,)))
+    return HttpResponseRedirect(reverse('pixkal2:dashboard',))
+
+def ModeloBAR(request,blugar,tipo):
+    recurso = ""
+    if tipo=="busqueda":
+        recurso = get_object_or_404(BusquedaLugar, pk=blugar)
+    elif tipo=="clase":
+        recurso = get_object_or_404(ClaseItem, pk=blugar)
+    return render(request, 'pixkal2/modelobar.html',{'recurso' : recurso})
+
+def VerMisClases(request):
+    idusuario = request.user
+    misclases = Clase.objects.filter(usuario=request.user).order_by('-id')
+    perfil = get_object_or_404(Perfil, usuario=request.user)
+    # Paginador de mis clases
+
+    mipage = request.GET.get('page', 1)
+
+    mipaginator = Paginator(misclases, 6)
+    try:
+        lista_miclase = mipaginator.page(mipage)
+    except PageNotAnInteger:
+        lista_miclase = mipaginator.page(1)
+    except EmptyPage:
+        lista_miclase = mipaginator.page(mipaginator.num_pages)
+
+    return render(request, 'pixkal2/misclases.html',{'misclases' : lista_miclase,'idusuario' : idusuario,'perfil' : perfil})
+
+def EditarClase(request, pk):
+    clase = get_object_or_404(Clase, pk=pk)
+    if request.method == "POST":
+        form = ClaseForm(request.POST, instance=clase)
+        if form.is_valid():
+            post = form.save(commit=False)
+#            post.author = request.user
+#            post.published_date = timezone.now()
+            post.save()
+            return redirect('pixkal2:misclases')
+    else:
+        form = ClaseForm(instance=clase)
+        claseitems = ClaseItem.objects.filter(clase=clase)
+        editar = 1
+        return render(request, 'pixkal2/registrarclase.html', {'form': form,'claseitems': claseitems,'clase' : clase, 'editar': editar })
+    return redirect('pixkal2:misclases')
+
+def RegistrarItemClase(request,clase_id):
+    if request.method == "POST":
+        formulario = ItemClaseForm(request.POST)
+        if formulario.is_valid():
+            itemclase = formulario.save(commit=False)
+            clase = Clase.objects.get(pk=clase_id)
+            itemclase.clase = clase
+            avatar = get_object_or_404(Avatar, pk=1)
+            itemclase.avatar = avatar
+#            post.published_date = timezone.now()
+            itemclase.save()
+            clase.no_items = clase.no_items + 1
+            clase.save()
+            return HttpResponseRedirect(reverse('pixkal2:misclases',))
+    else:
+        form = ItemClaseForm()
+        return render(request, 'pixkal2/registraritem.html', {'form': form, 'editar' : 0})
+
+def ActualizarClaseItem(request, item_id):
+    item = get_object_or_404(ClaseItem, pk=item_id)
+    if request.method == "POST":
+        form = ItemClaseForm(request.POST, instance=item)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.save()
+            return HttpResponseRedirect(reverse('pixkal2:misclases',))
+    else:
+        form = ItemClaseForm(instance=item)
+        editar = 1
+    return render(request, 'pixkal2/registraritem.html', {'form': form, 'editar': editar })
+
+def ActivarClase(request,clase_id):
+    clase = Clase.objects.get(id=clase_id)
+    clase.estado = 'A'
+    clase.save()
+
+    return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
+
+def CancelarClase(request,clase_id):
+    clase = Clase.objects.get(id=clase_id)
+    clase.estado = 'C'
+    clase.save()
+    return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
+
+def ActualizarImagenClase(request,pk):
+    clase = get_object_or_404(Clase, pk=pk)
+    if request.method == "POST":
+        form = ClaseImagenForm(request.POST, request.FILES, instance=clase)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.save()
+        return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
+    return render(request, 'pixkal2/actualizarimagenclase.html')
+
+def VisualizarClase(request,clase_id, orden):
+    items = ClaseItem.objects.filter(clase=clase_id)
+    item = items[int(orden)]
+    orden = int(orden) + 1
+    return render(request, 'pixkal2/visualizarclase.html', {'item': item,'orden': orden,'clase_id':clase_id })

@@ -1,60 +1,55 @@
+{% extends 'pixkal2/base.html' %}
 {% load static %}
-<!DOCTYPE html>
 
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Wave Recorder Example</title>
-  <script src="{% static 'pixkal2/js/recorder.min.js' %}"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+{% block head %}
+<script src="{% static 'pixkal2/js/recorder.min.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <style type='text/css'>
     ul { list-style: none; }
     li { margin: 1em; }
     audio { display: block; }
   </style>
-</head>
-<body>
+{% endblock %}
 
-  <h1>Wave Recorder example</h1>
-  <p>Before you enable monitoring, make sure to either plug in headphones or turn the volume down.</p>
 
-  <h2>Options</h2>
+{% block content %}
 
-  <div>
-    <label>monitorGain</label>
-    <input id="monitorGain" type="number" value="0" />
+<div style="width: 100%; text-align:right;">
+<a href="/sonido/eliminar/{{ recurso.id }}/{{ tipo }}/">Eliminar</a>
+</div>
+
+  <div style="width: 100%;">
+  <h1>Agregar grabación</h1>
+  <p>Antes de iniciar verifica que utilizar audifonos y micrófono o tienes el volúmen bajo</p>
   </div>
 
-  <div>
-    <label>recordingGain</label>
-    <input id="recordingGain" type="number" value="1" />
+    <input type="hidden" id="monitorGain" type="number" value="0" />
+    <input type="hidden" id="recordingGain" type="number" value="1" />
+    <input type="hidden" id="numberOfChannels" type="number" value="1" />
+    <input type="hidden" id="bitDepth" type="number" value="16" />
+
+
+  <div style="width: 100%;">
+    <button id="init" class="btn btn-success">Habilitar grabación</button>
   </div>
 
-  <div>
-    <label>numberOfChannels</label>
-    <input id="numberOfChannels" type="number" value="1" />
+  <div style="width: 100%;">
+  <h2>Controles de grabación</h2>
+  <button id="start" class="btn btn-success" disabled>start</button>
+  <button id="pause" class="btn btn-secondary" disabled>pause</button>
+  <button id="resume" class="btn btn-success" disabled>resume</button>
+  <button id="stopButton" class="btn btn-danger" disabled>stop</button>
   </div>
 
-  <div>
-    <label>bitDepth</label>
-    <input id="bitDepth" type="number" value="16" />
-  </div>
-
-  <div>
-    <button id="init">init recorder with options</button>
-  </div>
-
-  <h2>Recorder Commands</h2>
-  <button id="start" disabled>start</button>
-  <button id="pause" disabled>pause</button>
-  <button id="resume" disabled>resume</button>
-  <button id="stopButton" disabled>stop</button>
-
-  <h2>Recordings</h2>
+<div style="width: 100%;">
+  <h2>Grabación</h2>
   <ul id="recordingslist"></ul>
+</div>
 
-  <h2>Log</h2>
+<div style="width: 100%;">
+  <h2>Registro</h2>
   <pre id="log"></pre>
+</div>
 
   <script>
 
@@ -80,12 +75,12 @@ function upload(blob, progressBar){
         var csrftoken = getCookie('csrftoken');
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/sonido/subir/{{ lugar.id }}/', true); //Obviamente esto va a cambiar
+        xhr.open('POST', '/sonido/subir/{{ recurso.id }}/{{ tipo }}/', true); //Obviamente esto va a cambiar
         xhr.setRequestHeader("X-CSRFToken", csrftoken);
         xhr.setRequestHeader("MyCustomHeader", "Put anything you need in here, like an ID");
 
         xhr.upload.onloadend = function() {
-            alert('Upload complete');
+            alert('¡Proceso exitoso!');
         };
         // If you want you can show the upload progress using a progress bar
         //var progressBar = document.querySelector('progress');
@@ -103,7 +98,7 @@ function upload(blob, progressBar){
     }
 
     if (!Recorder.isRecordingSupported()) {
-      screenLogger("Recording features are not supported in your browser.");
+      screenLogger("Este navegador no tiene capacidades de grabación.");
     }
 
     else {
@@ -128,36 +123,36 @@ function upload(blob, progressBar){
         stopButton.addEventListener( "click", function(){ recorder.stop(); });
         start.addEventListener( "click", function(){
           recorder.start().catch(function(e){
-            screenLogger('Error encountered:', e.message );
+            screenLogger('Error encontrado:', e.message );
           });
         });
 
         recorder.onstart = function(){
-          screenLogger('Recorder is started');
+          screenLogger('La grabación ha iniciado');
           start.disabled = resume.disabled = true;
           pause.disabled = stopButton.disabled = false;
         };
 
         recorder.onstop = function(){
-          screenLogger('Recorder is stopped');
+          screenLogger('La grabación se ha detenido');
           start.disabled = false;
           pause.disabled = resume.disabled = stopButton.disabled = true;
         };
 
         recorder.onpause = function(){
-          screenLogger('Recorder is paused');
+          screenLogger('La grabación ha sido pausada');
           pause.disabled = start.disabled = true;
           resume.disabled = stopButton.disabled = false;
         };
 
         recorder.onresume = function(){
-          screenLogger('Recorder is resuming');
+          screenLogger('Continuación de la grabación');
           start.disabled = resume.disabled = true;
           pause.disabled = stopButton.disabled = false;
         };
 
         recorder.onstreamerror = function(e){
-          screenLogger('Error encountered: ' + e.message );
+          screenLogger('Error encontrado: ' + e.message );
         };
 
         recorder.ondataavailable = function( typedArray ){
@@ -179,10 +174,10 @@ function upload(blob, progressBar){
             progress.min = 0;
             progress.max = 100;
             progress.value = 0;
-            var progressText = document.createTextNode("Progress: ");
+            var progressText = document.createTextNode("Progreso: ");
 
             var button = document.createElement('button');
-            var t = document.createTextNode("Upload?");
+            var t = document.createTextNode("Subir?");
             button.id = 'button';
             button.appendChild(t);
             button.onclick = function() {
@@ -204,5 +199,6 @@ function upload(blob, progressBar){
 
 
   </script>
-</body>
-</html>
+
+{% endblock %}
+

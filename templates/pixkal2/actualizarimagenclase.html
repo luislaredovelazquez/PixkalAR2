@@ -1,0 +1,16 @@
+{% extends 'pixkal2/base.html' %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'pixkal2/centrar.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+ <form class="form-signin" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+<p><label for="id_imagen">Imagen:</label>
+<input type="file" name="imagen" accept="image/*" class="form-control" required id="id_imagen"></p>
+<button class="btn btn-lg btn-primary btn-block" type="submit">Actualizar</button>
+</form>
+
+{% endblock %}

@@ -46,9 +46,18 @@ urlpatterns = [
     path('pregunta/actualizar/<blugar>/', views.ActualizarPregunta, name='actualizarpregunta'),
     path('pregunta/eliminar/<blugar>/', views.EliminarPregunta, name='eliminarpregunta'),
     path('pregunta/ver/<blugar>/', views.VerPregunta, name='verpregunta'),
-    path('sonido/lugar/<blugar>/', views.AgregarSonido, name='agregarsonido'),
-    path('sonido/subir/<blugar>/', views.SubirSonido, name='subirsonido'),
-    path('modelobAR/<blugar>/', views.ModeloBAR, name='modelobar'),
+    path('sonido/lugar/<blugar>/<tipo>/', views.AgregarSonido, name='agregarsonido'),
+    path('sonido/subir/<blugar>/<tipo>/', views.SubirSonido, name='subirsonido'),
+    path('sonido/eliminar/<blugar>/<tipo>/', views.EliminarSonido, name='eliminarsonido'),
+    path('modelobAR/<blugar>/<tipo>/', views.ModeloBAR, name='modelobar'),
+    path('misclases/', views.VerMisClases, name='misclases'),
+    path('clase/editar/<int:pk>/', views.EditarClase, name='editarclase'),
+    path('clase/activar/<clase_id>/', views.ActivarClase, name='activarclase'),
+    path('clase/cancelar/<clase_id>/', views.CancelarClase, name='cancelarclase'),
+    path('clase/visualizar/<clase_id>/<orden>/', views.VisualizarClase, name='visualizarclase'),
+    path('clase/imagen/actualizar/<int:pk>/', views.ActualizarImagenClase, name='actualizarimagenclase'),
+    path('item/registrar/<clase_id>/', views.RegistrarItemClase, name='registraritemclase'),
+    path('item/actualizar/<item_id>/', views.ActualizarClaseItem, name='actualizaritemclase'),
 ]
 
 if settings.DEBUG:

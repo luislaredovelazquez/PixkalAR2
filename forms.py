@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Busqueda, BusquedaLugar, Clase, Perfil
+from .models import Busqueda, BusquedaLugar, Clase, Perfil, ClaseItem
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -85,13 +85,12 @@ class ClaseForm(forms.ModelForm):
 
     class Meta:
         model = Clase
-        fields = ('titulo', 'avatar','imagen',)
+        fields = ('titulo', 'avatar',)
 
     def __init__(self, *args, **kwargs):
         super(ClaseForm, self).__init__(*args, **kwargs)
         self.fields['titulo'].widget.attrs.update({'class' : 'form-control'})
         self.fields['avatar'].widget.attrs.update({'class' : 'form-control'})
-        self.fields['imagen'].widget.attrs.update({'class' : 'form-control'})
 
 class PerfilForm(forms.ModelForm):
 
@@ -122,3 +121,23 @@ class SonidoForm(forms.ModelForm):
             return file
         else:
             raise ValidationError("No fue posible subir el archivo")
+
+class ItemClaseForm(forms.ModelForm):
+
+    class Meta:
+        model = ClaseItem
+        fields = ('avatar',)
+
+    def __init__(self, *args, **kwargs):
+        super(ItemClaseForm, self).__init__(*args, **kwargs)
+        self.fields['avatar'].widget.attrs.update({'class' : 'form-control'})
+
+class ClaseImagenForm(forms.ModelForm):
+
+    class Meta:
+        model = Busqueda
+        fields = ('imagen',)
+
+    def __init__(self, *args, **kwargs):
+        super(ClaseImagenForm, self).__init__(*args, **kwargs)
+        self.fields['imagen'].widget.attrs.update({'class' : 'form-control'})

@@ -22,6 +22,10 @@ def upload_location_treasure_s(instance, filename):
     filebase, extension = filename.split('.')
     return 'sonidos/s%s.%s' % (instance.id, extension)
 
+def upload_location_c(instance, filename):
+    filebase, extension = filename.split('.')
+    return 'sonidos/c%s.%s' % (instance.id, extension)
+
 def validate_image(image):
     file_size = image.file.size
     limit_kb = 1500
@@ -135,11 +139,30 @@ class ItemEncontrado(models.Model):
         return self.busqueda.titulo_busqueda
 
 class Clase(models.Model):
+    OPCIONES_ESTADO = (
+        ('I', 'Inactivo'),
+        ('C', 'Cancelado'),
+        ('A', 'Activo'),
+        ('T', 'Terminado'),
+    )
     titulo = models.CharField(max_length=350)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE)
     creacion = models.DateTimeField(auto_now=True)
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, default=1)
     imagen = models.ImageField(upload_to=upload_location_clase, default="", validators=[validate_image])
+    no_items = models.PositiveSmallIntegerField(default=0)
+    estado = models.CharField(max_length=1, choices=OPCIONES_ESTADO,default="I")
     def __str__(self):
         return self.titulo
+
+class ClaseItem(models.Model):
+    clase = models.ForeignKey(Clase, on_delete=models.CASCADE)
+    avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE)
+    sonido = models.FileField(upload_to=upload_location_c, default="", validators=[validate_image])
+    bandera_sonido = models.SmallIntegerField(default=0)
+    bandera_marcador = models.SmallIntegerField(default=0)
+    creacion = models.DateTimeField(auto_now=True)
+    ultima_modificacion = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.clase.titulo

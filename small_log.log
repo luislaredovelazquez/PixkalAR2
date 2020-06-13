@@ -1,0 +1,141 @@
+[13/Jun/2020 15:49:40] ERROR [django.request:228] Internal Server Error: /clase/activar/2/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+TypeError: EditarClase() got an unexpected keyword argument 'clase_id'
+[13/Jun/2020 15:59:16] WARNING [django.request:228] Not Found: /clase/imagen/actualizar/2/
+[13/Jun/2020 16:27:38] ERROR [django.request:228] Internal Server Error: /clase/visualizar/1/0/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+TypeError: VisualizarClase() got multiple values for argument 'clase_id'
+[13/Jun/2020 16:30:25] ERROR [django.request:228] Internal Server Error: /clase/visualizar/1/0/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+TypeError: VisualizarClase() got multiple values for argument 'clase_id'
+[13/Jun/2020 16:32:56] ERROR [django.request:228] Internal Server Error: /clase/visualizar/1/0/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+TypeError: VisualizarClase() got multiple values for argument 'clase_id'
+[13/Jun/2020 16:33:58] ERROR [django.request:228] Internal Server Error: /clase/visualizar/1/0/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 665, in VisualizarClase
+    items = ClaseItem.objects.get(clase=clase)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 417, in get
+    self.model._meta.object_name
+pixkal2.models.ClaseItem.DoesNotExist: ClaseItem matching query does not exist.
+[13/Jun/2020 16:34:31] ERROR [django.request:228] Internal Server Error: /clase/visualizar/1/0/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 664, in VisualizarClase
+    items = ClaseItem.objects.get(clase=clase_id)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 417, in get
+    self.model._meta.object_name
+pixkal2.models.ClaseItem.DoesNotExist: ClaseItem matching query does not exist.
+[13/Jun/2020 16:35:00] ERROR [django.request:228] Internal Server Error: /clase/visualizar/2/0/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 664, in VisualizarClase
+    items = ClaseItem.objects.get(clase=clase_id)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 422, in get
+    num if not limit or num < limit else 'more than %s' % (limit - 1),
+pixkal2.models.ClaseItem.MultipleObjectsReturned: get() returned more than one ClaseItem -- it returned 3!
+[13/Jun/2020 16:35:56] ERROR [django.request:228] Internal Server Error: /clase/visualizar/2/0/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 665, in VisualizarClase
+    return render('pixkal2/visualizarclase.html', {'items': items })
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/template/backends/django.py", line 34, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/template/engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/template/engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/template/loaders/base.py", line 18, in get_template
+    for origin in self.get_template_sources(template_name):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/template/loaders/filesystem.py", line 36, in get_template_sources
+    name = safe_join(template_dir, template_name)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/utils/_os.py", line 17, in safe_join
+    final_path = abspath(join(base, *paths))
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/posixpath.py", line 94, in join
+    genericpath._check_arg_types('join', a, *p)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/genericpath.py", line 149, in _check_arg_types
+    (funcname, s.__class__.__name__)) from None
+TypeError: join() argument must be str or bytes, not 'dict'
+[13/Jun/2020 17:22:28] ERROR [django.request:228] Internal Server Error: /clase/visualizar/2/0/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 665, in VisualizarClase
+    item = items[orden]
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 288, in __getitem__
+    % type(k).__name__
+TypeError: QuerySet indices must be integers or slices, not str.
+[13/Jun/2020 18:05:21] ERROR [django.request:228] Internal Server Error: /clase/visualizar/1/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 665, in VisualizarClase
+    item = items[int(orden)]
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 314, in __getitem__
+    return qs._result_cache[0]
+IndexError: list index out of range
