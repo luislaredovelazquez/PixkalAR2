@@ -425,7 +425,7 @@ def VerGaleriaAR(request):
 
 def RegistrarClase(request):
     if request.method == "POST":
-        formulario = ClaseForm(request.POST, request.FILES)
+        formulario = ClaseForm(request.POST)
         if formulario.is_valid():
             clase = formulario.save(commit=False)
             clase.usuario = request.user
@@ -661,7 +661,8 @@ def ActualizarImagenClase(request,pk):
     return render(request, 'pixkal2/actualizarimagenclase.html')
 
 def VisualizarClase(request,clase_id, orden):
+    principal_clase = get_object_or_404(Clase, pk=clase_id)
     items = ClaseItem.objects.filter(clase=clase_id)
     item = items[int(orden)]
     orden = int(orden) + 1
-    return render(request, 'pixkal2/visualizarclase.html', {'item': item,'orden': orden,'clase_id':clase_id })
+    return render(request, 'pixkal2/visualizarclase.html', {'item': item,'orden': orden,'clase_id':clase_id,'clase':principal_clase })

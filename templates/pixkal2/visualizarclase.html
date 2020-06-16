@@ -20,14 +20,17 @@
     </div>
     <a-scene embedded arjs>
 
-<!--    <a-marker preset="kanji"> -->
+{% if clase.bandera_marcador == 'M' %}
+    <a-marker preset="kanji">
+{% endif %}
       <a-entity
           position="0 0 0"
           scale="2 2 2"
           gltf-model="/static/pixkal2/gltf/{{ item.avatar.model_3DName }}" animation-mixer look-at="[camera]">
         </a-entity>
-
-<!--      </a-marker> -->
+{% if clase.bandera_marcador == 'M' %}
+</a-marker>
+{% endif %}
 
       <a-entity camera></a-entity>
     </a-scene>
