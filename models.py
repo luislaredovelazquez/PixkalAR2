@@ -155,6 +155,7 @@ class Clase(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE)
     creacion = models.DateTimeField(auto_now=True)
+    descripcion = models.TextField(max_length=350, default="")
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, default=1)
     imagen = models.ImageField(upload_to=upload_location_clase, default="", validators=[validate_image])
     no_items = models.PositiveSmallIntegerField(default=0)
@@ -179,11 +180,21 @@ class Dash(models.Model):
         ('C', 'Clase'),
         ('S', 'Stream'),
     )
+
+    OPCIONES_ESTADO = (
+        ('I', 'Inactivo'),
+        ('C', 'Cancelado'),
+        ('A', 'Activo'),
+        ('T', 'Terminado'),
+    )
+
     servicio = models.CharField(max_length=1, choices=OPCIONES_SERVICIO, default="M")
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=350)
     descripcion = models.TextField(max_length=350, default="")
     imagen = models.CharField(max_length=350)
     url = models.CharField(max_length=350)
+    id_actividad = models.IntegerField(default=0)
+    estado = models.CharField(max_length=1, choices=OPCIONES_ESTADO, default='A')
     def __str__(self):
         return self.titulo

@@ -329,3 +329,283 @@ Traceback (most recent call last):
   File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/template/base.py", line 543, in unclosed_block_tag
     raise self.error(token, msg)
 django.template.exceptions.TemplateSyntaxError: Unclosed tag on line 31: 'if'. Looking for one of: elif, else, endif.
+[17/Jun/2020 13:48:52] WARNING [django.request:228] Not Found: /favicon.ico
+[17/Jun/2020 14:17:10] ERROR [django.request:228] Internal Server Error: /clase/editar/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 100, in _get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/urls/resolvers.py", line 544, in resolve
+    for pattern in self.url_patterns:
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/utils/functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/urls/resolvers.py", line 588, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/utils/functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/urls/resolvers.py", line 581, in urlconf_module
+    return import_module(self.urlconf_name)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 678, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/home/luislaredov/pixkal/pixkal/urls.py", line 20, in <module>
+    path('pixkal2/', include('pixkal2.urls')),
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/urls/conf.py", line 34, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 678, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/home/luislaredov/pixkal/pixkal2/urls.py", line 7, in <module>
+    from . import views
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 675
+    dash.url = 'clase/visualizar/' + clase.id + '/0/
+                                                   ^
+SyntaxError: EOL while scanning string literal
+[17/Jun/2020 14:18:23] ERROR [django.request:228] Internal Server Error: /clase/activar/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 663, in ActivarClase
+    dash = Dash.objects.get(id_actividad=clase_id,servicio='C')
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 417, in get
+    self.model._meta.object_name
+pixkal2.models.Dash.DoesNotExist: Dash matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 675, in ActivarClase
+    dash.url = 'clase/visualizar/' + int(clase.id) + '/0/'
+TypeError: must be str, not int
+[17/Jun/2020 14:19:58] ERROR [django.request:228] Internal Server Error: /clase/activar/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 663, in ActivarClase
+    dash = Dash.objects.get(id_actividad=int(clase_id),servicio='C')
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 417, in get
+    self.model._meta.object_name
+pixkal2.models.Dash.DoesNotExist: Dash matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 675, in ActivarClase
+    dash.url = 'clase/visualizar/' + int(clase.id) + '/0/'
+TypeError: must be str, not int
+[17/Jun/2020 14:21:05] ERROR [django.request:228] Internal Server Error: /clase/activar/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 663, in ActivarClase
+    dash = Dash.objects.get(id_actividad=str(clase_id),servicio='C')
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 417, in get
+    self.model._meta.object_name
+pixkal2.models.Dash.DoesNotExist: Dash matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 675, in ActivarClase
+    dash.url = 'clase/visualizar/' + int(clase.id) + '/0/'
+TypeError: must be str, not int
+[17/Jun/2020 14:22:20] ERROR [django.request:228] Internal Server Error: /clase/activar/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 663, in ActivarClase
+    dash = Dash.objects.get(id_actividad=clase_id,servicio='C')
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 417, in get
+    self.model._meta.object_name
+pixkal2.models.Dash.DoesNotExist: Dash matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 675, in ActivarClase
+    dash.url = 'clase/visualizar/' + int(clase.id) + '/0/'
+TypeError: must be str, not int
+[17/Jun/2020 14:23:34] ERROR [django.request:228] Internal Server Error: /clase/activar/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 663, in ActivarClase
+    dash = Dash.objects.get(id_actividad=str(clase_id),servicio='C')
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 417, in get
+    self.model._meta.object_name
+pixkal2.models.Dash.DoesNotExist: Dash matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 675, in ActivarClase
+    dash.url = 'clase/visualizar/' + int(clase.id) + '/0/'
+TypeError: must be str, not int
+[17/Jun/2020 17:20:26] WARNING [django.request:228] Not Found: /favicon.ico
+[17/Jun/2020 19:02:44] ERROR [django.request:228] Internal Server Error: /pixkal2/clase/editar/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 656, in EditarClase
+    dash.descripcion = clase.descripcion
+AttributeError: 'Clase' object has no attribute 'descripcion'
+[17/Jun/2020 19:03:52] ERROR [django.request:228] Internal Server Error: /pixkal2/clase/editar/1/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 656, in EditarClase
+    dash.imagen = clase.imagen
+AttributeError: 'Clase' object has no attribute 'descripcion'
+[17/Jun/2020 19:05:16] ERROR [django.request:228] Internal Server Error: /pixkal2/registrar/busqueda/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/mysql/base.py", line 74, in execute
+    return self.cursor.execute(query, args)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/MySQLdb/cursors.py", line 209, in execute
+    res = self._query(query)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/MySQLdb/cursors.py", line 315, in _query
+    db.query(q)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/MySQLdb/connections.py", line 239, in query
+    _mysql.connection.query(self, query)
+MySQLdb._exceptions.OperationalError: (1048, "Column 'numero_personas' cannot be null")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 227, in RegistrarBusqueda
+    busqueda.save()
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/base.py", line 746, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/base.py", line 784, in save_base
+    force_update, using, update_fields,
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/base.py", line 887, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/base.py", line 926, in _do_insert
+    using=using, raw=raw,
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 1204, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1391, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/mysql/base.py", line 79, in execute
+    raise utils.IntegrityError(*tuple(e.args))
+django.db.utils.IntegrityError: (1048, "Column 'numero_personas' cannot be null")
+[17/Jun/2020 19:06:39] WARNING [django.request:228] Not Found: /pixkal2/registrar/busquedalugar/1/docs/images/favicon.ico
+[17/Jun/2020 19:07:22] WARNING [django.request:228] Not Found: /registrar/busquedalugar/1/docs/images/favicon.ico
+[17/Jun/2020 19:21:57] WARNING [django.request:228] Not Found: /media/
+[17/Jun/2020 19:22:02] WARNING [django.request:228] Not Found: /pixkal2/dashboard/clase/visualizar/1/0/
+[17/Jun/2020 19:23:31] WARNING [django.request:228] Not Found: /media/
+[17/Jun/2020 19:26:17] WARNING [django.request:228] Not Found: /media/
+[17/Jun/2020 19:34:34] WARNING [django.request:228] Not Found: /mapa/2/docs/images/favicon.ico
+[17/Jun/2020 19:40:45] ERROR [django.request:228] Internal Server Error: /pixkal2/clase/registrar/
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/mysql/base.py", line 74, in execute
+    return self.cursor.execute(query, args)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/MySQLdb/cursors.py", line 209, in execute
+    res = self._query(query)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/MySQLdb/cursors.py", line 315, in _query
+    db.query(q)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/MySQLdb/connections.py", line 239, in query
+    _mysql.connection.query(self, query)
+MySQLdb._exceptions.OperationalError: (1048, "Column 'avatar_id' cannot be null")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/luislaredov/pixkal/pixkal2/views.py", line 474, in RegistrarClase
+    clase.save()
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/base.py", line 746, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/base.py", line 784, in save_base
+    force_update, using, update_fields,
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/base.py", line 887, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/base.py", line 926, in _do_insert
+    using=using, raw=raw,
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/query.py", line 1204, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1391, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/luislaredov/.virtualenvs/django2/lib/python3.6/site-packages/django/db/backends/mysql/base.py", line 79, in execute
+    raise utils.IntegrityError(*tuple(e.args))
+django.db.utils.IntegrityError: (1048, "Column 'avatar_id' cannot be null")
+[17/Jun/2020 19:49:17] WARNING [django.request:228] Not Found: /mapa/1/docs/images/favicon.ico

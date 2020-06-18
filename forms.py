@@ -85,12 +85,12 @@ class ClaseForm(forms.ModelForm):
 
     class Meta:
         model = Clase
-        fields = ('titulo', 'avatar','bandera_marcador')
+        fields = ('titulo','descripcion','bandera_marcador')
 
     def __init__(self, *args, **kwargs):
         super(ClaseForm, self).__init__(*args, **kwargs)
         self.fields['titulo'].widget.attrs.update({'class' : 'form-control'})
-        self.fields['avatar'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
         self.fields['bandera_marcador'].label = '¿Usar marcador?'
         self.fields['bandera_marcador'].widget.attrs.update({'class' : 'form-control'})
 

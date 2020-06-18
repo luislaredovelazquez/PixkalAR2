@@ -6,7 +6,7 @@ from django.views import generic
 from django.contrib.auth import login, authenticate
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil, ClaseItem
+from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil, ClaseItem, Dash
 from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm, ItemClaseForm, ClaseImagenForm
 from django.conf import settings
 
@@ -59,12 +59,39 @@ def ActivarBusqueda(request,busqueda_id):
     busqueda.estado = 'A'
     busqueda.save()
 
+    try:
+        dash = Dash.objects.get(id_actividad=busqueda_id,servicio='B')
+        dash.titulo = busqueda.titulo_busqueda
+        dash.descripcion = busqueda.descripcion
+        dash.imagen = busqueda.imagen
+        dash.estado = 'A'
+        dash.save()
+    except Dash.DoesNotExist:
+        dash = Dash()
+        dash.servicio = 'B'
+        dash.estado = 'A'
+        dash.usuario = request.user
+        dash.titulo = busqueda.titulo_busqueda
+        dash.descripcion = busqueda.descripcion
+        dash.imagen = busqueda.imagen
+        dash.url = 'treasure/iniciar/' + str(busqueda.id)
+        dash.id_actividad = busqueda.id
+        dash.save()
+
     return render(request, 'pixkal2/activatetreasure.html', {'busqueda': busqueda, 'busqueda_id' : busqueda_id})
 
 def CancelarBusqueda(request,busqueda_id):
     busqueda = Busqueda.objects.get(id=busqueda_id)
     busqueda.estado = 'C'
     busqueda.save()
+
+    try:
+        dash = Dash.objects.get(id_actividad=busqueda.id,servicio='B')
+        dash.estado = 'I'
+        dash.save()
+    except Dash.DoesNotExist:
+        return render(request, 'pixkal2/canceltreasure.html', {'busqueda': busqueda, 'busqueda_id' : busqueda_id})
+
     return render(request, 'pixkal2/canceltreasure.html', {'busqueda': busqueda, 'busqueda_id' : busqueda_id})
 
 def IniciarBusqueda(request,busquedalugar_id):
@@ -196,7 +223,7 @@ def RegistrarBusqueda(request):
             busqueda.creador = request.user
             perfil = Perfil.objects.get(usuario=request.user)
             busqueda.perfil = perfil
-#            post.published_date = timezone.now()
+            busqueda.numero_personas = 0
             busqueda.save()
             busqueda_id=busqueda.pk
             return HttpResponseRedirect(reverse('pixkal2:registrarbusquedalugar', args=(busqueda_id,)))
@@ -211,9 +238,17 @@ def EditarBusqueda(request, pk):
         form = BusquedaForm(request.POST, instance=busqueda)
         if form.is_valid():
             post = form.save(commit=False)
-#            post.author = request.user
-#            post.published_date = timezone.now()
             post.save()
+
+            try:
+                dash = Dash.objects.get(id_actividad=busqueda.id,servicio='B')
+                dash.titulo = busqueda.titulo_busqueda
+                dash.descripcion = busqueda.descripcion
+                dash.imagen = busqueda.imagen
+                dash.save()
+            except Dash.DoesNotExist:
+                return redirect('pixkal2:misbusquedas')
+
             return redirect('pixkal2:misbusquedas')
     else:
         form = BusquedaForm(instance=busqueda)
@@ -229,6 +264,16 @@ def ActualizarImagenBusqueda(request,pk):
         if form.is_valid():
             post = form.save(commit=False)
             post.save()
+
+            try:
+                dash = Dash.objects.get(id_actividad=busqueda.id,servicio='B')
+                dash.titulo = busqueda.titulo_busqueda
+                dash.descripcion = busqueda.descripcion
+                dash.imagen = busqueda.imagen
+                dash.save()
+            except Dash.DoesNotExist:
+                return redirect('pixkal2:misbusquedas')
+
         return redirect('pixkal2:misbusquedas')
     return render(request, 'pixkal2/actualizarimagenbusqueda.html')
 
@@ -291,26 +336,21 @@ def AgregarParticipante(request, busqueda_id):
 
 def VerDashboard(request):
     idusuario = request.user
-    busquedas = Busqueda.objects.filter(estado='A').exclude(creador=request.user).order_by('-id')
-    busquedasparticipo = BusquedaParticipante.objects.filter(usuario=request.user).filter(estado='T')
-    for busquedaparticipo in busquedasparticipo:
-        for busqueda in busquedas:
-            if busqueda.id == busquedaparticipo.busqueda.id:
-                busquedas = busquedas.exclude(id = busqueda.id)
+    dash = Dash.objects.filter(estado='A').order_by('-id')
 
 # Paginador de búsqueda
 
     page = request.GET.get('page', 1)
 
-    paginator = Paginator(busquedas, 6)
+    paginator = Paginator(dash, 6)
     try:
-        lista_busqueda = paginator.page(page)
+        lista_dashboard = paginator.page(page)
     except PageNotAnInteger:
-        lista_busqueda = paginator.page(1)
+        lista_dashboard = paginator.page(1)
     except EmptyPage:
-        lista_busqueda = paginator.page(paginator.num_pages)
+        lista_dashboard = paginator.page(paginator.num_pages)
 
-    return render(request, 'pixkal2/dashboard.html',{'busquedas' : lista_busqueda,'idusuario' : idusuario})
+    return render(request, 'pixkal2/dashboard.html',{'dashboard' : lista_dashboard,'idusuario' : idusuario})
 
 def VerMisBusquedas(request):
     idusuario = request.user
@@ -431,6 +471,8 @@ def RegistrarClase(request):
             clase.usuario = request.user
             perfil = get_object_or_404(Perfil, usuario=request.user)
             clase.perfil = perfil
+            avatar = get_object_or_404(Avatar, id=1)
+            clase.avatar = avatar
             clase.save()
 #            clase_id=clase.pk
             return HttpResponseRedirect(reverse('pixkal2:dashboard'))
@@ -445,9 +487,16 @@ def ActualizarClase(request, clase_id):
         form = ClaseForm(request.POST, request.FILES, instance=clase)
         if form.is_valid():
             post = form.save(commit=False)
-#            post.author = request.user
-#            post.published_date = timezone.now()
             post.save()
+
+            try:
+                dash = Dash.objects.get(id_actividad=clase.id,servicio='C')
+                dash.titulo = clase.titulo
+                dash.imagen = clase.imagen
+                dash.save()
+            except Dash.DoesNotExist:
+                return redirect('pixkal2:misclases')
+
             return redirect('pixkal2:dashboard')
     else:
         form = ClaseForm(instance=clase)
@@ -595,9 +644,17 @@ def EditarClase(request, pk):
         form = ClaseForm(request.POST, instance=clase)
         if form.is_valid():
             post = form.save(commit=False)
-#            post.author = request.user
-#            post.published_date = timezone.now()
             post.save()
+
+            try:
+                dash = Dash.objects.get(id_actividad=clase.id,servicio='C')
+                dash.titulo = clase.titulo
+                dash.descripcion = clase.descripcion
+                dash.imagen = clase.imagen
+                dash.save()
+            except Dash.DoesNotExist:
+                return redirect('pixkal2:misclases')
+
             return redirect('pixkal2:misclases')
     else:
         form = ClaseForm(instance=clase)
@@ -642,12 +699,41 @@ def ActivarClase(request,clase_id):
     clase.estado = 'A'
     clase.save()
 
+    try:
+        dash = Dash.objects.get(id_actividad=clase_id,servicio='C')
+        dash.titulo = clase.titulo
+        dash.descripcion = ""
+        dash.imagen = clase.imagen
+        dash.descripcion = clase.descripcion
+        dash.estado = 'A'
+        dash.save()
+    except Dash.DoesNotExist:
+        dash = Dash()
+        dash.servicio = 'C'
+        dash.estado = 'A'
+        dash.usuario = request.user
+        dash.titulo = clase.titulo
+        dash.descripcion = clase.descripcion
+        dash.descripcion = ""
+        dash.imagen = clase.imagen
+        dash.url = 'clase/visualizar/' + str(clase.id) + '/0/'
+        dash.id_actividad = clase.id
+        dash.save()
+
     return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
 
 def CancelarClase(request,clase_id):
     clase = Clase.objects.get(id=clase_id)
     clase.estado = 'C'
     clase.save()
+
+    try:
+        dash = Dash.objects.get(id_actividad=clase.id,servicio='C')
+        dash.estado = 'I'
+        dash.save()
+    except Dash.DoesNotExist:
+        return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
+
     return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
 
 def ActualizarImagenClase(request,pk):
@@ -657,6 +743,16 @@ def ActualizarImagenClase(request,pk):
         if form.is_valid():
             post = form.save(commit=False)
             post.save()
+
+            try:
+                dash = Dash.objects.get(id_actividad=clase.id,servicio='C')
+                dash.titulo = clase.titulo
+                dash.descripcion = clase.descripcion
+                dash.imagen = clase.imagen
+                dash.save()
+            except Dash.DoesNotExist:
+                return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
+
         return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
     return render(request, 'pixkal2/actualizarimagenclase.html')
 

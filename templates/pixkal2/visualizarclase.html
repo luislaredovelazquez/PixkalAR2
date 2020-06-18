@@ -15,9 +15,7 @@
   <!-- we import arjs version without NFT but with marker + location based support -->
 
   <body style="margin : 0px; overflow: hidden;">
-    <div style='position: fixed; bottom: 10px; width:100%; text-align: left; z-index: 1;'>
-    <a href="/clase/visualizar/{{ clase_id }}/{{ orden }}"role="button" class="btn btn-success" bottom: auto !important; top: 10px;>Siguiente</a>
-    </div>
+
     <a-scene embedded arjs>
 
 {% if clase.bandera_marcador == 'M' %}
@@ -25,8 +23,8 @@
 {% endif %}
       <a-entity
           position="0 0 0"
-          scale="2 2 2"
-          gltf-model="/static/pixkal2/gltf/{{ item.avatar.model_3DName }}" animation-mixer look-at="[camera]">
+          scale="0.5 0.5 0.5"
+          gltf-model="/static/pixkal2/gltf/{{ item.avatar.model_3DName }}">
         </a-entity>
 {% if clase.bandera_marcador == 'M' %}
 </a-marker>
