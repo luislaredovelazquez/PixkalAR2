@@ -10,7 +10,6 @@ class BusquedaForm(forms.ModelForm):
 
     class Meta:
         model = Busqueda
-#        fields = "__all__"
         fields = ('titulo_busqueda', 'descripcion', 'recompensa')
 
     def __init__(self, *args, **kwargs):
@@ -18,12 +17,7 @@ class BusquedaForm(forms.ModelForm):
         self.fields['titulo_busqueda'].widget.attrs.update({'class' : 'form-control'})
         self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
         self.fields['recompensa'].widget.attrs.update({'class' : 'form-control'})
-#        self.fields['inicio'].widget.attrs.update({'class' : 'form-control datepicker'})
-#        self.fields['inicio'].widget.attrs.update({'data-value' : '2020-06-01'})
-#        self.fields['fin'].widget.attrs.update({'class' : 'form-control datepicker'})
-#        self.fields['fin'].widget.attrs.update({'data-value' : '2020-06-01'})
-#        self.fields['duracion'].widget.attrs.update({'class' : 'form-control'})
-#        self.fields['numero_personas'].widget.attrs.update({'class' : 'form-control','value' : '3'})
+
 
 class BusquedaImagenForm(forms.ModelForm):
 
@@ -39,15 +33,12 @@ class BusquedaLugarForm(forms.ModelForm):
 
     class Meta:
         model = BusquedaLugar
-#        fields = "__all__"
         fields = ('latitud','longitud')
 
     def __init__(self, *args, **kwargs):
         super(BusquedaLugarForm, self).__init__(*args, **kwargs)
-#        self.fields['avatar'].widget.attrs.update({'class' : 'form-control'})
         self.fields['latitud'].widget.attrs.update({'class' : 'form-control'})
         self.fields['longitud'].widget.attrs.update({'class' : 'form-control'})
-#        self.fields['avatar'].widget.attrs.update({'style' : 'display:none;'})
         self.fields['latitud'].widget.attrs.update({'style' : 'display:none;'})
         self.fields['longitud'].widget.attrs.update({'style' : 'display:none;'})
 

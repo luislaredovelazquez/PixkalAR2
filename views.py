@@ -1,12 +1,10 @@
-from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from django.views import generic
 from django.contrib.auth import login, authenticate
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil, ClaseItem, Dash
+from .models import Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil, ClaseItem, Dash
 from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm, ItemClaseForm, ClaseImagenForm
 from django.conf import settings
 
