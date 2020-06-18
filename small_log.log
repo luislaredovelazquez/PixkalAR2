@@ -609,3 +609,7 @@ Traceback (most recent call last):
     raise utils.IntegrityError(*tuple(e.args))
 django.db.utils.IntegrityError: (1048, "Column 'avatar_id' cannot be null")
 [17/Jun/2020 19:49:17] WARNING [django.request:228] Not Found: /mapa/1/docs/images/favicon.ico
+[18/Jun/2020 09:58:51] WARNING [django.request:228] Not Found: /favicon.ico
+[18/Jun/2020 13:11:37] WARNING [django.request:228] Not Found: /favicon.ico
+[18/Jun/2020 16:16:25] WARNING [django.request:228] Not Found: /favicon.ico
+[18/Jun/2020 17:17:59] WARNING [django.request:228] Not Found: /favicon.ico

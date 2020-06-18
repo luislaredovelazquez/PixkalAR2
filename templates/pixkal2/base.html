@@ -9,6 +9,20 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'pixkal2/bootstrap.min.css' %}" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="{% static 'pixkal2/centrar.css' %}" rel="stylesheet">
+
+    <style>
+    .m_item{
+    color: rgba(255,255,255,.5);
+    line-height: 1.6;
+    display: block;
+    padding: .5rem 1rem;
+    }
+    .m_item:hover{
+    color: rgba(255,255,255,.8);
+    text-decoration: none;
+    }
+    </style>
+
     {% block head %}{% endblock %}
 
     <title>{% block title %}Pixkal{% endblock %}</title>
@@ -27,21 +41,30 @@
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'pixkal2:actualizarperfil' %}">{{user.username}}<span class="sr-only">(current)</span></a>
       </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'pixkal2:misbusquedas' %}">Búsquedas creadas por mí </a>
-      </li>
-     <li class="nav-item">
-        <a class="nav-link" href="{% url 'pixkal2:busquedasparticipo' %}">Búsquedas en las que participo</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'pixkal2:registrarbusqueda' %}">Registrar búsqueda</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'pixkal2:registrarclase' %}">Crear clase </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'pixkal2:misclases' %}">Clases creadas por mí </a>
-      </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Búsqueda
+        </a>
+
+    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+        <a class="m_item" href="{% url 'pixkal2:registrarbusqueda' %}">Registrar búsqueda</a>
+        <a class="m_item" href="{% url 'pixkal2:misbusquedas' %}">Búsquedas creadas por mí </a>
+    </div>
+
+    </li>
+
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Clase
+        </a>
+    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+        <a class="m_item" href="{% url 'pixkal2:registrarclase' %}">Crear clase </a>
+        <a class="m_item" href="{% url 'pixkal2:misclases' %}">Clases creadas por mí </a>
+    </div>
+    </li>
+
       <li class="nav-item">
         <a class="nav-link" href="{% url 'pixkal2:logout' %}">Salir</a>
       </li>

@@ -10,50 +10,25 @@ from .models import Choice, Question, Busqueda, BusquedaLugar, BusquedaParticipa
 from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm, ItemClaseForm, ClaseImagenForm
 from django.conf import settings
 
+
+# Usuario ingresa a landing page, si está autenticado ingresa a dashboard
 def mostrarIndex(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('pixkal2:dashboard'))
     else:
         return render(request, 'pixkal2/index.html')
-#    context_object_name = 'latest_question_list'
 
-#   def get_queryset(self):
-#        """
-#        Return the last five published questions (not including those set to be
-#        published in the future).
-#        """
-#        return Question.objects.filter(
-#            pub_date__lte=timezone.now()
-#        ).order_by('-pub_date')[:5]
-
-
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'pixkal2/detail.html'
-
-    def get_queryset(self):
-        """
-        Excludes any questions that aren't published yet.
-        """
-        return Question.objects.filter(pub_date__lte=timezone.now())
-
-
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'pixkal2/results.html'
-
-class ARView(generic.DetailView):
-    model = Question
-    template_name = 'pixkal2/AR.html'
-
+# Vista para ver un avatar con un marcador (Usada para usuarios no registrados)
 def MarkerAR(request,avatar_id):
     avatar = Avatar.objects.get(id=avatar_id)
     return render(request, 'pixkal2/markerAR.html',{'avatar' : avatar})
 
+# Vista para ver un avatar sin marcador (Usada para usuarios no registrados)
 def SoloAR(request,avatar_id):
     avatar = Avatar.objects.get(id=avatar_id)
     return render(request, 'pixkal2/soloAR.html',{'avatar' : avatar})
 
+# Vista de activación de búsqueda
 def ActivarBusqueda(request,busqueda_id):
     busqueda = Busqueda.objects.get(id=busqueda_id)
     busqueda.estado = 'A'
@@ -80,6 +55,7 @@ def ActivarBusqueda(request,busqueda_id):
 
     return render(request, 'pixkal2/activatetreasure.html', {'busqueda': busqueda, 'busqueda_id' : busqueda_id})
 
+# Vista de cancelación de búsqueda
 def CancelarBusqueda(request,busqueda_id):
     busqueda = Busqueda.objects.get(id=busqueda_id)
     busqueda.estado = 'C'
@@ -94,11 +70,13 @@ def CancelarBusqueda(request,busqueda_id):
 
     return render(request, 'pixkal2/canceltreasure.html', {'busqueda': busqueda, 'busqueda_id' : busqueda_id})
 
+# Vista de inicio de búsqueda (Inicio de la experiencia AR)
 def IniciarBusqueda(request,busquedalugar_id):
-#    busquedalugares = BusquedaLugar.objects.filter(id=busquedalugar_id)
     busquedalugar = get_object_or_404(BusquedaLugar, pk=busquedalugar_id)
     return render(request, 'pixkal2/treasure.html', {'busquedalugar': busquedalugar, 'busqueda_id' : busquedalugar.busqueda.id})
 
+# Vista para comenzar búsqueda, esta vista arregla aleatoriamente el primer lugar en la búsqueda del tesoro y genera una interfaz
+# Para mandarla posteriormente a iniciar busqueda (Inicio de la experiencia AR)
 def ComenzarBusqueda(request,busqueda_id):
     busqueda = Busqueda.objects.get(id=busqueda_id)
     busquedalugares = BusquedaLugar.objects.filter(busqueda=busqueda_id)
@@ -120,6 +98,9 @@ def ComenzarBusqueda(request,busqueda_id):
         mensaje = 'Esta búsqueda no contiene elementos para explorar'
         return render(request,'pixkal2/mensaje_error.html',{'mensaje' : mensaje})
 
+# Vista intermedia que es mostrada cada vez que el usuario encuentra un nuevo avatar
+# Esta vista originalmente fue pensada para mostrar información como tiempo/número de participantes/información sobre
+# El siguiente lugar etc.
 def StatusBusqueda(request,busqueda_id,busqueda_lugar_id):
 
     participantes = BusquedaParticipante.objects.filter(busqueda=busqueda_id).order_by('-items_encontrados')[:10]
@@ -172,7 +153,7 @@ def StatusBusqueda(request,busqueda_id,busqueda_lugar_id):
     siguientelugar = obtenerAleatorio(busqueda_id,request.user);
     return render(request, 'pixkal2/status_treasure.html',{'siguientelugar': siguientelugar, 'busqueda' : busqueda, 'busqueda_completada' : busqueda_completada,'participantes' : participantes,'primero' : primero})
 
-
+# Función para obtener un nuevo lugar aleatorio
 def obtenerAleatorio(busqueda_id,usuario_id):
     #Si no fue el último item, se envía al siguiente lugar de manera aletoria
     lugaresbusqueda = BusquedaLugar.objects.filter(busqueda=busqueda_id)
@@ -193,27 +174,7 @@ def obtenerAleatorio(busqueda_id,usuario_id):
         incremental = incremental + 1
     return siguientelugar;
 
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'pixkal2/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('pixkal2:results', args=(question.id,)))
-
-##Lugares
-
-
+# Método para crear una nueva búsqueda
 def RegistrarBusqueda(request):
     if request.method == "POST":
         formulario = BusquedaForm(request.POST)
@@ -232,6 +193,7 @@ def RegistrarBusqueda(request):
         editar = 0
         return render(request, 'pixkal2/registrarbusqueda.html', {'form': form, 'editar': editar })
 
+# Método para editar una búsqueda
 def EditarBusqueda(request, pk):
     busqueda = get_object_or_404(Busqueda, pk=pk)
     if request.method == "POST":
@@ -257,6 +219,7 @@ def EditarBusqueda(request, pk):
         return render(request, 'pixkal2/registrarbusqueda.html', {'form': form,'busquedalugares': busquedalugares,'busqueda' : busqueda, 'editar': editar })
     return redirect('pixkal2:misbusquedas')
 
+# Método para actualizar la imagen de la busqueda
 def ActualizarImagenBusqueda(request,pk):
     busqueda = get_object_or_404(Busqueda, pk=pk)
     if request.method == "POST":
@@ -277,6 +240,7 @@ def ActualizarImagenBusqueda(request,pk):
         return redirect('pixkal2:misbusquedas')
     return render(request, 'pixkal2/actualizarimagenbusqueda.html')
 
+# Método para registrar los lugares de la búsqueda
 def RegistrarBusquedaLugar(request,busqueda_id):
     if request.method == "POST":
         formulario = BusquedaLugarForm(request.POST)
@@ -286,7 +250,6 @@ def RegistrarBusquedaLugar(request,busqueda_id):
             busquedalugar.busqueda = busqueda
             avatar = get_object_or_404(Avatar, pk=1)
             busquedalugar.avatar = avatar
-#            post.published_date = timezone.now()
             busquedalugar.save()
             busqueda.no_items = busqueda.no_items + 1
             busqueda.save()
@@ -298,6 +261,7 @@ def RegistrarBusquedaLugar(request,busqueda_id):
         busquedalugar.id = 0
         return render(request, 'pixkal2/registrarbusquedalugar.html', {'form': form, 'busquedalugar' : busquedalugar})
 
+# Método para editar las coordenadas y el lugar general
 def EditarBusquedaLugar(request, pk):
     busquedalugar = get_object_or_404(BusquedaLugar, pk=pk)
     if request.method == "POST":
@@ -311,29 +275,7 @@ def EditarBusquedaLugar(request, pk):
         busquedalugar = BusquedaLugar.objects.get(id=pk)
     return render(request, 'pixkal2/registrarbusquedalugar.html', {'form': form,'busquedalugar':busquedalugar})
 
-def AgregarParticipante(request, busqueda_id):
-#Luego va a ser POST
-    if request.method == "GET":
-#Validar que los usuarios no se registren 2 veces
-        try:
-            validado = BusquedaParticipante.objects.filter(busqueda=busqueda_id,usuario=request.user)
-        except ItemEncontrado.DoesNotExist:
-            validado = None
-
-        if validado:
-            return HttpResponseRedirect(reverse('pixkal2:dashboard'))
-
-        busquedaparticipante = BusquedaParticipante()
-        busquedaparticipante.usuario = request.user
-        busqueda = Busqueda.objects.get(pk=busqueda_id)
-        busquedaparticipante.busqueda = busqueda
-        busquedaparticipante.items_encontrados = 0
-        busquedaparticipante.estado = 'P'
-        busquedaparticipante.save()
-        return HttpResponseRedirect(reverse('pixkal2:busquedasparticipo'))
-    else:
-        return HttpResponseRedirect(reverse('pixkal2:dashboard'))
-
+# Método para ver el dashboard una vez autenticado
 def VerDashboard(request):
     idusuario = request.user
     dash = Dash.objects.filter(estado='A').order_by('-id')
@@ -352,6 +294,7 @@ def VerDashboard(request):
 
     return render(request, 'pixkal2/dashboard.html',{'dashboard' : lista_dashboard,'idusuario' : idusuario})
 
+# Método para ver las búsquedas creadas
 def VerMisBusquedas(request):
     idusuario = request.user
     misbusquedas = Busqueda.objects.filter(creador=request.user).order_by('-id')
@@ -370,32 +313,7 @@ def VerMisBusquedas(request):
 
     return render(request, 'pixkal2/misbusquedas.html',{'misbusquedas' : lista_mibusqueda,'idusuario' : idusuario,'perfil' : perfil})
 
-
-def VerBusquedasParticipo(request):
-    idusuario = request.user
-    busquedasparticipo = BusquedaParticipante.objects.filter(usuario=request.user).exclude(estado='G').exclude(estado='T')
-    busquedas = Busqueda.objects.filter(estado='A').exclude(creador=request.user).order_by('-id')
-    for busqueda in busquedas:
-        for busquedaparticipo in busquedasparticipo:
-            if busqueda.id == busquedaparticipo.busqueda.id:
-                busquedasparticipo = busquedasparticipo.filter(id = busquedaparticipo.id)
-
-# Paginador de búsquedas donde participo
-
-    pageparticipo = request.GET.get('page', 1)
-
-    paginatorparticipo = Paginator(busquedasparticipo, 6)
-    try:
-        lista_busquedaparticipo = paginatorparticipo.page(pageparticipo)
-    except PageNotAnInteger:
-        lista_busquedaparticipo = paginatorparticipo.page(1)
-    except EmptyPage:
-        lista_busquedaparticipo = paginatorparticipo.page(paginatorparticipo.num_pages)
-
-    return render(request, 'pixkal2/busquedasparticipo.html',{'idusuario' : idusuario,'busquedasparticipo' : lista_busquedaparticipo})
-
-
-
+# Método para registrarse a la plataforma
 def Signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -415,11 +333,12 @@ def Signup(request):
         form = SignUpForm()
     return render(request, 'pixkal2/signup.html', {'form': form})
 
-
+# Método para visualizar el mapa y hacer la búsqueda
 def VerMapa(request, busqueda_lugar_id):
     busquedalugar = get_object_or_404(BusquedaLugar, pk=busqueda_lugar_id)
     return render(request, 'pixkal2/mapa.html',{ 'busquedalugar' : busquedalugar })
 
+# Método para visualizar el avatar (para usuarios externos)
 def VerAvatar(request, busqueda_lugar_id):
     avatares = Avatar.objects.all().order_by('-id')
     mipage = request.GET.get('page', 1)
@@ -434,6 +353,7 @@ def VerAvatar(request, busqueda_lugar_id):
     busquedalugar = get_object_or_404(BusquedaLugar, pk=busqueda_lugar_id)
     return render(request, 'pixkal2/verAvatar.html',{ 'busquedalugar' : busquedalugar,'misbusquedas' : lista_mibusqueda,'avatares' : avatares })
 
+# Método para seleccionar el avatar de una búsqueda
 def SeleccionarAvatar(request, avatar_id, busqueda_lugar_id):
     if request.method == 'GET':
         avatar = get_object_or_404(Avatar, pk=avatar_id)
@@ -445,11 +365,7 @@ def SeleccionarAvatar(request, avatar_id, busqueda_lugar_id):
     else:
         return render(request, 'pixkal2/dashboard.html')
 
-
-def VerInformacionBusqueda(request,busqueda_id):
-    busqueda = get_object_or_404(Busqueda, pk=busqueda_id)
-    return render(request,'pixkal2/treasure_info.html',{'busqueda' : busqueda})
-
+# Método para desplegar la galería de personajes (esto para usuarios externos desde index)
 def VerGaleriaAR(request):
     avatares = Avatar.objects.all().order_by('-id')
     mipage = request.GET.get('page', 1)
@@ -463,72 +379,13 @@ def VerGaleriaAR(request):
         lista_mibusqueda = mipaginator.page(mipaginator.num_pages)
     return render(request,'pixkal2/galeria_ar.html',{'misbusquedas' : lista_mibusqueda,'avatares' : avatares })
 
-def RegistrarClase(request):
-    if request.method == "POST":
-        formulario = ClaseForm(request.POST)
-        if formulario.is_valid():
-            clase = formulario.save(commit=False)
-            clase.usuario = request.user
-            perfil = get_object_or_404(Perfil, usuario=request.user)
-            clase.perfil = perfil
-            avatar = get_object_or_404(Avatar, id=1)
-            clase.avatar = avatar
-            clase.save()
-#            clase_id=clase.pk
-            return HttpResponseRedirect(reverse('pixkal2:dashboard'))
-    else:
-        form = ClaseForm()
-        editar = 0
-        return render(request, 'pixkal2/gestionarclase.html', {'form': form, 'editar': editar })
-
-def ActualizarClase(request, clase_id):
-    clase = get_object_or_404(Clase, pk=clase_id)
-    if request.method == "POST":
-        form = ClaseForm(request.POST, request.FILES, instance=clase)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.save()
-
-            try:
-                dash = Dash.objects.get(id_actividad=clase.id,servicio='C')
-                dash.titulo = clase.titulo
-                dash.imagen = clase.imagen
-                dash.save()
-            except Dash.DoesNotExist:
-                return redirect('pixkal2:misclases')
-
-            return redirect('pixkal2:dashboard')
-    else:
-        form = ClaseForm(instance=clase)
-        editar = 1
-    return render(request, 'pixkal2/gestionarclase.html', {'form': form, 'editar': editar })
-
-def VerClase(request, clase_id):
-    clase = get_object_or_404(Clase, pk=clase_id)
-    return render(request, 'pixkal2/verclase.html',{ 'clase' : clase })
-
-def RegistrarPerfil(request):
-    if request.method == "POST":
-        formulario = PerfilForm(request.POST, request.FILES)
-        if formulario.is_valid():
-            perfil = formulario.save(commit=False)
-            perfil.usuario = request.user
-            perfil.save()
-#            clase_id=clase.pk
-            return HttpResponseRedirect(reverse('pixkal2:dashboard'))
-    else:
-        form = PerfilForm()
-        editar = 0
-        return render(request, 'pixkal2/gestionarperfil.html', {'form': form, 'editar': editar })
-
+# Método para actualizar un perfil una vez creado al registrarse el usuario
 def ActualizarPerfil(request):
     perfil = get_object_or_404(Perfil, pk=request.user.id)
     if request.method == "POST":
         form = PerfilForm(request.POST,request.FILES, instance=perfil)
         if form.is_valid():
             post = form.save(commit=False)
-#            post.author = request.user
-#            post.published_date = timezone.now()
             post.save()
             return redirect('pixkal2:dashboard')
     else:
@@ -536,6 +393,7 @@ def ActualizarPerfil(request):
         editar = 1
     return render(request, 'pixkal2/gestionarperfil.html', {'form': form, 'editar': editar })
 
+# Método para actualizar preguntas en búsquedas del tesoro
 def ActualizarPregunta(request,blugar):
     busquedalugar = get_object_or_404(BusquedaLugar, pk=blugar)
     if request.method == "POST":
@@ -550,12 +408,15 @@ def ActualizarPregunta(request,blugar):
         else:
             return render(request, 'pixkal2/gestionarpregunta.html',{'actualizar':0})
 
+# Método para eliminar preguntas
 def EliminarPregunta(request,blugar):
     busquedalugar = get_object_or_404(BusquedaLugar, pk=blugar)
     busquedalugar.bandera_pregunta = 0
     busquedalugar.save()
     return HttpResponseRedirect(reverse('pixkal2:editarbusqueda', args=(busquedalugar.busqueda.id,)))
 
+
+# Método para visualizar la pregunta en la búsqueda del tesoro
 def VerPregunta(request,blugar):
     busquedalugar = get_object_or_404(BusquedaLugar, pk=blugar)
     if request.method == "POST":
@@ -566,6 +427,7 @@ def VerPregunta(request,blugar):
     else:
         return render(request, 'pixkal2/verpregunta.html',{'busquedalugar': busquedalugar,'error': 0})
 
+# Método para agregar un sonido
 def AgregarSonido(request,blugar,tipo):
     recurso = ""
     if tipo=="busqueda":
@@ -574,7 +436,7 @@ def AgregarSonido(request,blugar,tipo):
         recurso = get_object_or_404(ClaseItem, pk=blugar)
     return render(request,'pixkal2/agregar_sonido.html', {'recurso': recurso, 'tipo' : tipo,})
 
-
+# Método para subir un sonido, este método funciona con una petición Ajax
 def SubirSonido(request,blugar,tipo):
     if tipo=="busqueda":
         lugar = get_object_or_404(BusquedaLugar, pk=blugar)
@@ -597,6 +459,7 @@ def SubirSonido(request,blugar,tipo):
     # put additional logic like creating a model instance or something like this here
     return HttpResponseRedirect(reverse('pixkal2:dashboard'))
 
+# Método para eliminar un sonido (en realidad sólo actualiza el campo y borra el último archivo)
 def EliminarSonido(request,blugar,tipo):
     if tipo=="busqueda":
         busquedalugar = get_object_or_404(BusquedaLugar, pk=blugar)
@@ -612,6 +475,8 @@ def EliminarSonido(request,blugar,tipo):
         return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(item.clase.id,)))
     return HttpResponseRedirect(reverse('pixkal2:dashboard',))
 
+# Visualizar modelo 3D al momento de crear un lugar o un item de clase
+# (Esta página implementa el sonido grabado en caso de que exista)
 def ModeloBAR(request,blugar,tipo):
     recurso = ""
     if tipo=="busqueda":
@@ -620,6 +485,7 @@ def ModeloBAR(request,blugar,tipo):
         recurso = get_object_or_404(ClaseItem, pk=blugar)
     return render(request, 'pixkal2/modelobar.html',{'recurso' : recurso})
 
+# Método para visualizar las clases creadas en la plataforma
 def VerMisClases(request):
     idusuario = request.user
     misclases = Clase.objects.filter(usuario=request.user).order_by('-id')
@@ -638,6 +504,26 @@ def VerMisClases(request):
 
     return render(request, 'pixkal2/misclases.html',{'misclases' : lista_miclase,'idusuario' : idusuario,'perfil' : perfil})
 
+# Método para registrar una clase, usa un template diferente ya que el de
+# registrar clase es más contiene pues contiene los items de clase
+def RegistrarClase(request):
+    if request.method == "POST":
+        formulario = ClaseForm(request.POST)
+        if formulario.is_valid():
+            clase = formulario.save(commit=False)
+            clase.usuario = request.user
+            perfil = get_object_or_404(Perfil, usuario=request.user)
+            clase.perfil = perfil
+            avatar = get_object_or_404(Avatar, id=1)
+            clase.avatar = avatar
+            clase.save()
+            return HttpResponseRedirect(reverse('pixkal2:dashboard'))
+    else:
+        form = ClaseForm()
+        editar = 0
+        return render(request, 'pixkal2/gestionarclase.html', {'form': form, 'editar': editar })
+
+# Método para editar una nueva clase
 def EditarClase(request, pk):
     clase = get_object_or_404(Clase, pk=pk)
     if request.method == "POST":
@@ -663,6 +549,7 @@ def EditarClase(request, pk):
         return render(request, 'pixkal2/registrarclase.html', {'form': form,'claseitems': claseitems,'clase' : clase, 'editar': editar })
     return redirect('pixkal2:misclases')
 
+# Método para editar un item para una clase
 def RegistrarItemClase(request,clase_id):
     if request.method == "POST":
         formulario = ItemClaseForm(request.POST)
@@ -672,7 +559,6 @@ def RegistrarItemClase(request,clase_id):
             itemclase.clase = clase
             avatar = get_object_or_404(Avatar, pk=1)
             itemclase.avatar = avatar
-#            post.published_date = timezone.now()
             itemclase.save()
             clase.no_items = clase.no_items + 1
             clase.save()
@@ -681,6 +567,7 @@ def RegistrarItemClase(request,clase_id):
         form = ItemClaseForm()
         return render(request, 'pixkal2/registraritem.html', {'form': form, 'editar' : 0})
 
+# Método para actualizar el item de una case
 def ActualizarClaseItem(request, item_id):
     item = get_object_or_404(ClaseItem, pk=item_id)
     if request.method == "POST":
@@ -694,6 +581,7 @@ def ActualizarClaseItem(request, item_id):
         editar = 1
     return render(request, 'pixkal2/registraritem.html', {'form': form, 'editar': editar })
 
+# Método para actualizar una clase
 def ActivarClase(request,clase_id):
     clase = Clase.objects.get(id=clase_id)
     clase.estado = 'A'
@@ -722,6 +610,7 @@ def ActivarClase(request,clase_id):
 
     return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
 
+# Método para cancelar una clase
 def CancelarClase(request,clase_id):
     clase = Clase.objects.get(id=clase_id)
     clase.estado = 'C'
@@ -736,6 +625,7 @@ def CancelarClase(request,clase_id):
 
     return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
 
+# Método para actualizar la imagen de una clase
 def ActualizarImagenClase(request,pk):
     clase = get_object_or_404(Clase, pk=pk)
     if request.method == "POST":
@@ -756,6 +646,7 @@ def ActualizarImagenClase(request,pk):
         return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(clase.id,)))
     return render(request, 'pixkal2/actualizarimagenclase.html')
 
+# Método para visualizar una clase
 def VisualizarClase(request,clase_id, orden):
     principal_clase = get_object_or_404(Clase, pk=clase_id)
     items = ClaseItem.objects.filter(clase=clase_id)
