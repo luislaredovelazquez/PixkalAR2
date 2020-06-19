@@ -77,6 +77,17 @@ def IniciarBusqueda(request,busquedalugar_id):
 # Para mandarla posteriormente a iniciar busqueda (Inicio de la experiencia AR)
 def ComenzarBusqueda(request,busqueda_id):
     busqueda = Busqueda.objects.get(id=busqueda_id)
+
+    try:
+        BusquedaParticipante.objects.get(usuario=request.user,busqueda=busqueda_id)
+    except BusquedaParticipante.DoesNotExist:
+        participante = BusquedaParticipante()
+        participante.usuario = request.user
+        participante.busqueda = busqueda
+        participante.items_encontrados = 0
+        participante.estado = 'A'
+        participante.save()
+
     busquedalugares = BusquedaLugar.objects.filter(busqueda=busqueda_id)
 
     numero_lugares = busquedalugares.count()
@@ -646,8 +657,11 @@ def ActualizarImagenClase(request,pk):
 
 # Método para visualizar una clase
 def VisualizarClase(request,clase_id, orden):
-    principal_clase = get_object_or_404(Clase, pk=clase_id)
-    items = ClaseItem.objects.filter(clase=clase_id)
-    item = items[int(orden)]
-    orden = int(orden) + 1
+    try:
+        principal_clase = get_object_or_404(Clase, pk=clase_id)
+        items = ClaseItem.objects.filter(clase=clase_id)
+        item = items[int(orden)]
+        orden = int(orden) + 1
+    except IndexError:
+        return render(request, 'pixkal2/finclase.html')
     return render(request, 'pixkal2/visualizarclase.html', {'item': item,'orden': orden,'clase_id':clase_id,'clase':principal_clase })
