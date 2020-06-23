@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Busqueda, BusquedaLugar, BusquedaParticipante, ItemEncontrado, Avatar, Clase, Perfil, ClaseItem, Dash
-from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm, ItemClaseForm, ClaseImagenForm
+from .forms import BusquedaForm, BusquedaLugarForm, SignUpForm, ClaseForm, PerfilForm, BusquedaImagenForm, ItemClaseForm, ClaseImagenForm,ItemClaseImagenForm
 from django.conf import settings
 
 
@@ -77,6 +77,8 @@ def IniciarBusqueda(request,busquedalugar_id):
 # Para mandarla posteriormente a iniciar busqueda (Inicio de la experiencia AR)
 def ComenzarBusqueda(request,busqueda_id):
     busqueda = Busqueda.objects.get(id=busqueda_id)
+    busqueda.contador_visitas = principal_clase.contador_visitas + 1
+    busqueda.save()
 
     try:
         BusquedaParticipante.objects.get(usuario=request.user,busqueda=busqueda_id)
@@ -87,6 +89,9 @@ def ComenzarBusqueda(request,busqueda_id):
         participante.items_encontrados = 0
         participante.estado = 'A'
         participante.save()
+
+        busqueda.contador_usuarios = busqueda.contador_usuarios + 1
+        busqueda.save()
 
     busquedalugares = BusquedaLugar.objects.filter(busqueda=busqueda_id)
 
@@ -194,6 +199,8 @@ def RegistrarBusqueda(request):
             perfil = Perfil.objects.get(usuario=request.user)
             busqueda.perfil = perfil
             busqueda.numero_personas = 0
+            busqueda.contador_visitas = 0
+            busqueda.contador_usuarios = 0
             busqueda.save()
             busqueda_id=busqueda.pk
             return HttpResponseRedirect(reverse('pixkal2:registrarbusquedalugar', args=(busqueda_id,)))
@@ -525,6 +532,8 @@ def RegistrarClase(request):
             clase.perfil = perfil
             avatar = get_object_or_404(Avatar, id=1)
             clase.avatar = avatar
+            clase.contador_visitas = 0
+            clase.contador_usuarios = 0
             clase.save()
             return HttpResponseRedirect(reverse('pixkal2:dashboard'))
     else:
@@ -657,11 +666,27 @@ def ActualizarImagenClase(request,pk):
 
 # Método para visualizar una clase
 def VisualizarClase(request,clase_id, orden):
+    principal_clase = get_object_or_404(Clase, pk=clase_id)
+    if int(orden) == 0:
+        principal_clase.contador_visitas = principal_clase.contador_visitas + 1
+        principal_clase.save()
     try:
-        principal_clase = get_object_or_404(Clase, pk=clase_id)
         items = ClaseItem.objects.filter(clase=clase_id)
         item = items[int(orden)]
         orden = int(orden) + 1
     except IndexError:
         return render(request, 'pixkal2/finclase.html')
-    return render(request, 'pixkal2/visualizarclase.html', {'item': item,'orden': orden,'clase_id':clase_id,'clase':principal_clase })
+    return render(request, 'pixkal2/visualizarclase.html', {'elemento': item,'orden': orden,'clase_id':clase_id,'clase':principal_clase })
+
+# Método para actualizar la imagen de una clase
+def ActualizarItemImagenClase(request,pk):
+    itemclase = get_object_or_404(ClaseItem, pk=pk)
+    if request.method == "POST":
+        form = ItemClaseImagenForm(request.POST, request.FILES, instance=itemclase)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.bandera_avatar = 1
+            post.save()
+
+        return HttpResponseRedirect(reverse('pixkal2:editarclase', args=(itemclase.clase.id,)))
+    return render(request, 'pixkal2/actualizaritemimagenclase.html')

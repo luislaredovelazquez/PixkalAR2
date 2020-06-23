@@ -76,7 +76,7 @@ class ClaseForm(forms.ModelForm):
 
     class Meta:
         model = Clase
-        fields = ('titulo','descripcion','bandera_marcador')
+        fields = ('titulo','descripcion','bandera_marcador','bandera_foco',)
 
     def __init__(self, *args, **kwargs):
         super(ClaseForm, self).__init__(*args, **kwargs)
@@ -84,6 +84,7 @@ class ClaseForm(forms.ModelForm):
         self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
         self.fields['bandera_marcador'].label = '¿Usar marcador?'
         self.fields['bandera_marcador'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['bandera_foco'].widget.attrs.update({'class' : 'form-control'})
 
 class PerfilForm(forms.ModelForm):
 
@@ -134,3 +135,15 @@ class ClaseImagenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ClaseImagenForm, self).__init__(*args, **kwargs)
         self.fields['imagen'].widget.attrs.update({'class' : 'form-control'})
+
+class ItemClaseImagenForm(forms.ModelForm):
+
+    class Meta:
+        model = ClaseItem
+        fields = ('item','tipo',)
+
+    def __init__(self, *args, **kwargs):
+        super(ItemClaseImagenForm, self).__init__(*args, **kwargs)
+        self.fields['item'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['tipo'].widget.attrs.update({'class' : 'form-control'})
+

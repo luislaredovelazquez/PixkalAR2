@@ -19,61 +19,35 @@
 <div class="card-columns">
 
   {% for mibusqueda in misbusquedas %}
-  <!-- Card -->
 
-<div class="card">
+
+    <div class="card">
   <div class="wrapper">
-    		<div class="card radius shadowDepth1">
-    			<div class="card__image border-tlr-radius">
-    			    {% if mibusqueda.imagen == "" %}
-    				<img src="{% static 'pixkal2/images/banner.jpg' %}" alt="image" class="border-tlr-radius">
-    				{% else %}
-    				<img src="/media/{{ mibusqueda.imagen }}" alt="image" class="border-tlr-radius">
-    				{% endif %}
-                </div>
 
-    			<div class="card__content card__padding">
-                    <div class="card__share">
-                        <div class="card__social">
-                            <a class="share-icon facebook" href="#"><span class="fa fa-facebook"></span></a>
-                            <a class="share-icon twitter" href="#"><span class="fa fa-twitter"></span></a>
-                            <a class="share-icon googleplus" href="#"><span class="fa fa-google-plus"></span></a>
-                        </div>
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+    {% if mibusqueda.imagen == "" %}
+    <img src="{% static 'pixkal2/images/banner.jpg' %}" alt="image" class="card-img">
+    {% else %}
+    <img src="/media/{{ mibusqueda.imagen }}" alt="image" class="card-img">
+    {%endif%}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title"><a href="/busqueda/{{mibusqueda.id}}/editar/">{{ mibusqueda.titulo_busqueda }}</a></h5>
+        <p class="card-text">{{ mibusqueda.descripcion }}</p>
+        <p class="card-text"> Creado: <time>{{ mibusqueda.creacion }}</time></p>
+        <p class="card-text">Visitas: {{ mibusqueda.contador_visitas }}</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-                        <a id="share" class="share-toggle share-icon" href="#"></a>
-                    </div>
-
-    				<div class="card__meta">
-                        Creado: <time>{{ mibusqueda.creacion }}</time>
-    				</div>
-
-    				<article class="card__article">
-	    				<h2><a href="/busqueda/{{mibusqueda.id}}/editar/">{{ mibusqueda.titulo_busqueda }}</a></h2>
-
-	    				<p>{{ mibusqueda.descripcion }}</p>
-	    			</article>
-    			</div>
-
-    			<div class="card__action">
-
-    				<div class="card__author">
-    				    <div style="width: 32px; height: 32px;">
-    				    {% if mibusqueda.perfil.imagen_busqueda == "" %}
-    					<img src="{% static 'pixkal2/images/profile.png' %}" alt="user" style="width: 100%; height: 100%;"/>
-    					{% else %}
-    					<img src="/media/{{ mibusqueda.perfil.imagen_busqueda }}" alt="user" style="width: 100%; height: 100%;"/>
-    					{% endif %}
-    					</div>
-    					<div class="card__author-content">
-    						Por <a href="#">{{ mibusqueda.creador.username }}</a>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
   </div>
 
 </div>
-  <!-- Card -->
+
 
 {% empty %}
 

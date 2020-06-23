@@ -8,21 +8,30 @@ def upload_location(instance, filename):
     filebase, extension = filename.split('.')
     return 'images/%s.%s' % (instance.usuario.id, extension)
 
+# Ubicación de imagenes en búsqueda
 def upload_location_busqueda(instance, filename):
     filebase, extension = filename.split('.')
     return 'images/b%s.%s' % (instance.id, extension)
 
+# Ubicación de imagenes en clase
 def upload_location_clase(instance, filename):
     filebase, extension = filename.split('.')
     return 'images/c%s.%s' % (instance.id, extension)
 
+# Ubicación de sonidos en búsqueda
 def upload_location_treasure_s(instance, filename):
     filebase, extension = filename.split('.')
     return 'sonidos/s%s.%s' % (instance.id, extension)
 
+# Ubicación de sonidos clase
 def upload_location_c(instance, filename):
     filebase, extension = filename.split('.')
     return 'sonidos/c%s.%s' % (instance.id, extension)
+
+# Ubicación de avatares (clase item)
+def upload_location_a(instance, filename):
+    filebase, extension = filename.split('.')
+    return 'avatares/%s.%s' % (instance.id, extension)
 
 def validate_image(image):
     file_size = image.file.size
@@ -62,6 +71,8 @@ class Busqueda(models.Model):
     no_items = models.PositiveSmallIntegerField(default=0)
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, default=1)
     imagen = models.ImageField(upload_to=upload_location_busqueda, default="", validators=[validate_image])
+    contador_visitas = models.IntegerField(default=0)
+    contador_usuarios = models.IntegerField(default=0)
     def __str__(self):
         return self.titulo_busqueda
 
@@ -117,6 +128,11 @@ class Clase(models.Model):
         ('S', 'Sin marcador'),
     )
 
+    OPCIONES_CAMARA = (
+        ('L', 'Libre'),
+        ('F', 'Mirar de frente'),
+    )
+
     titulo = models.CharField(max_length=350)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE)
@@ -127,16 +143,29 @@ class Clase(models.Model):
     no_items = models.PositiveSmallIntegerField(default=0)
     bandera_marcador = models.CharField(max_length=1, choices=OPCIONES_MARCADOR, default="M")
     estado = models.CharField(max_length=1, choices=OPCIONES_ESTADO,default="I")
+    contador_visitas = models.IntegerField(default=0)
+    contador_usuarios = models.IntegerField(default=0)
+    bandera_foco = models.CharField(max_length=1, choices=OPCIONES_CAMARA, default="L")
     def __str__(self):
         return self.titulo
 
 class ClaseItem(models.Model):
+
+    OPCIONES_TIPO = (
+        ('A', 'Avatar'),
+        ('V', 'Video'),
+        ('I', 'Imagen'),
+    )
+
     clase = models.ForeignKey(Clase, on_delete=models.CASCADE)
     avatar = models.ForeignKey(Avatar, on_delete=models.CASCADE)
     sonido = models.FileField(upload_to=upload_location_c, default="", validators=[validate_image])
     bandera_sonido = models.SmallIntegerField(default=0)
     creacion = models.DateTimeField(auto_now=True)
     ultima_modificacion = models.DateTimeField(auto_now_add=True)
+    bandera_avatar = models.SmallIntegerField(default=0)
+    item = models.FileField(upload_to=upload_location_a, default="", validators=[validate_image])
+    tipo = models.CharField(max_length=1, choices=OPCIONES_TIPO, default="A")
     def __str__(self):
         return self.clase.titulo
 

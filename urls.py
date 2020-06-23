@@ -48,6 +48,7 @@ urlpatterns = [
     path('clase/imagen/actualizar/<int:pk>/', views.ActualizarImagenClase, name='actualizarimagenclase'),
     path('item/registrar/<clase_id>/', views.RegistrarItemClase, name='registraritemclase'),
     path('item/actualizar/<item_id>/', views.ActualizarClaseItem, name='actualizaritemclase'),
+    path('clase/item/avatar/actualizar/<int:pk>/', views.ActualizarItemImagenClase, name='actualizaritemimagenclase'),
 ]
 
 if settings.DEBUG:
