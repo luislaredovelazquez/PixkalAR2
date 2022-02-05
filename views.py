@@ -77,7 +77,7 @@ def IniciarBusqueda(request,busquedalugar_id):
 # Para mandarla posteriormente a iniciar busqueda (Inicio de la experiencia AR)
 def ComenzarBusqueda(request,busqueda_id):
     busqueda = Busqueda.objects.get(id=busqueda_id)
-    busqueda.contador_visitas = principal_clase.contador_visitas + 1
+    busqueda.contador_visitas = busqueda.contador_visitas + 1
     busqueda.save()
 
     try:

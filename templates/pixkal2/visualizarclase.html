@@ -15,11 +15,21 @@
   <!-- we import arjs version without NFT but with marker + location based support -->
 
   <body style="margin : 0px; overflow: hidden;">
-    <div style='position: fixed; bottom: 10px; width:100%; text-align: center; z-index: 1;'>
+    <div style='position: fixed; top: 10px; width:100%; text-align: right; z-index: 1;'>
     <a href="/clase/visualizar/{{ clase_id }}/{{ orden }}"role="button" class="btn btn-success" bottom: auto !important; top: 10px;>Siguiente</a>
     </div>
 
     <a-scene embedded arjs>
+
+{% if elemento.tipo == 'I' %}
+      <a-assets>
+      <img id="wallpaper" src="/media/{{ elemento.item }}" />
+      </a-assets>
+{% elif elemento.tipo == 'V' %}
+      <a-assets>
+      <video id="wallpaper" autoplay loop="true" src="/media/{{ elemento.item }}"></video>
+      </a-assets>
+{% endif %}
 
 {% if clase.bandera_marcador == 'M' %}
     <a-marker preset="kanji">
@@ -34,31 +44,16 @@
           scale="0.5 0.5 0.5"
           gltf-model="/media/{{ elemento.item }}"
           {% if elemento.bandera_sonido == 1 %}     sound="src: url(/media/{{ elemento.sonido }}); autoplay: true" {% endif %}
-          {% if elemento.bandera_foco == 1 %}     look-at="[gps-camera]" {% endif %}
+          {% if clase.bandera_foco == 'F' %}     look-at="[camera]" {% endif %}
           >
         </a-entity>
 
 {% elif elemento.tipo == 'V' %}
 
-      <a-video
-          position="0 0 0"
-          scale="0.5 0.5 0.5"
-          src="/media/{{ elemento.item }}"
-          {% if elemento.bandera_foco == 1 %}     look-at="[gps-camera]" {% endif %}
-          >
-        </a-video>
+ <a-video src="/media/{{ elemento.item }}" rotation="-90 90 0"></a-video>
 
 {% elif elemento.tipo == 'I' %}
-
-      <a-image
-          position="0 0 0"
-          scale="0.5 0.5 0.5"
-          src="/media/{{ elemento.item }}"
-          {% if elemento.bandera_sonido == 1 %}     sound="src: url(/media/{{ elemento.sonido }}); autoplay: true" {% endif %}
-          {% if elemento.bandera_foco == 1 %}     look-at="[gps-camera]" {% endif %}
-          >
-        </a-image>
-
+      <a-image src="#wallpaper"></a-image>
 {% endif %}
 
 {% else %}
@@ -67,14 +62,13 @@
           scale="0.5 0.5 0.5"
           gltf-model="/static/pixkal2/gltf/{{ elemento.avatar.model_3DName }}"
           {% if elemento.bandera_sonido == 1 %}     sound="src: url(/media/{{ elemento.sonido }}); autoplay: true" {% endif %}
-          {% if elemento.bandera_foco == 1 %}     look-at="[gps-camera]" {% endif %}
+          {% if clase.bandera_foco == 'F' %}     look-at="[camera]" {% endif %}
           >
         </a-entity>
-
+{% endif %}
 
 {% if clase.bandera_marcador == 'M' %}
 </a-marker>
-{% endif %}
 {% endif %}
 
       <a-entity camera></a-entity>
